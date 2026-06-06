@@ -1,0 +1,34 @@
+---
+// Oversized display line. Set in Neue Pixel Grotesk (provided) to carry the
+// glitch character seen in the comp. The comp pixelates only the "ea" cluster;
+// once you confirm, I can mask it to that exact treatment.
+---
+<section class="years edge">
+  <div class="years-word">5—years</div>
+  <span class="years-tag mono">©UNTITLED OFFICE | 2025</span>
+</section>
+
+<style>
+  .years {
+    position: relative;
+    background: var(--bg);
+    color: var(--fg);
+    padding-block: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem);
+  }
+  .years-word {
+    font-family: var(--ff-sans); /* clean grotesque; pixel accent on "ea" pending */
+    font-weight: 500;
+    font-size: clamp(4rem, 18vw, 16rem);
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+  }
+  .years-tag {
+    position: absolute;
+    right: var(--edge);
+    bottom: clamp(1.5rem, 4vw, 3rem);
+  }
+  @media (max-width: 720px) {
+    .years-tag { position: static; display: block; margin-top: 0.8rem; }
+  }
+</style>

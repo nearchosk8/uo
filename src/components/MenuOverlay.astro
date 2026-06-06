@@ -1,0 +1,122 @@
+---
+// Menu overlay (the "burger" PDF state): a rounded panel anchored to the top
+// edge. Motion is a drawer slide — it translates straight DOWN from above the
+// viewport to cover the page (600ms ease-out) and retracts straight UP to
+// close (450ms ease-in). Clean opaque slide, no fade.
+// Nav targets are placeholders (#) until the other pages are designed.
+const nav = ["Home", "About", "Gallery", "Begin your journey", "Contact", "Selected Clients", "Shop"];
+---
+
+<div id="menu" class="menu" aria-hidden="true">
+  <div class="menu-inner edge">
+    <div class="menu-top mono">
+      <button id="menu-close" class="close" type="button">Close Tab</button>
+      <span>Local Time:&nbsp;<time id="clock-menu">--:--</time></span>
+    </div>
+
+    <nav class="menu-nav" aria-label="Primary">
+      {nav.map((item, i) => (
+        <a class="u-link" href="#" data-placeholder style={`--reveal-delay:${(nav.length - 1 - i) * 75}ms`}>
+          <span class="reveal">{item}</span>
+        </a>
+      ))}
+    </nav>
+
+    <div class="menu-foot mono">
+      <span>©2025 | ALL RIGHTS RESERVED</span>
+      <span class="socials">
+        <a class="u-link" href="#">LinkedIn</a>
+        <a class="u-link" href="#">Instagram</a>
+        <a class="u-link" href="#">Bēhance</a>
+      </span>
+    </div>
+  </div>
+</div>
+
+<style>
+  .menu {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 50;
+    background: var(--bg);
+    color: var(--fg);
+    border-bottom-left-radius: clamp(20px, 2.4vw, 36px);
+    border-bottom-right-radius: clamp(20px, 2.4vw, 36px);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.18);
+    transform: translateY(-100%);
+    pointer-events: none;
+    /* closing: slightly quicker ease-in */
+    transition: transform 0.45s cubic-bezier(0.4, 0, 1, 1);
+  }
+  .menu[data-open="true"] {
+    transform: translateY(0);
+    pointer-events: auto;
+    /* opening: ease-out */
+    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .menu-inner { padding-block: clamp(1.1rem, 1.8vw, 1.6rem) clamp(1.5rem, 3vw, 2.5rem); }
+  .menu-top {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-bottom: 0.9rem;
+  }
+  .close { background: none; border: 0; cursor: pointer; font: inherit; color: inherit; letter-spacing: inherit; text-transform: inherit; padding: 0; }
+
+  .menu-nav { display: flex; flex-direction: column; }
+  .menu-nav a {
+    font-size: clamp(1.5rem, 3.4vw, 2.6rem);
+    letter-spacing: -0.02em;
+    padding-block: clamp(0.35rem, 0.8vw, 0.6rem);
+    border-bottom: 1px solid var(--hairline);
+    overflow: hidden;
+    transition: filter 250ms ease;
+  }
+  .menu-nav a:first-child { border-top: 1px solid var(--hairline); }
+  .menu-nav a:hover { filter: blur(3px); }
+
+  .reveal {
+    display: inline-block;
+    transform: translateY(110%);
+    transition: transform 0.46s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .menu[data-open="true"] .reveal {
+    transform: translateY(0);
+    transition-delay: var(--reveal-delay);
+  }
+
+  .menu-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 1.4rem; }
+  .socials { display: inline-flex; gap: 1rem; }
+
+  @media (max-width: 720px) {
+    .menu-foot { flex-direction: column; align-items: flex-start; gap: 0.6rem; }
+  }
+</style>
+
+<script>
+  const menu = document.getElementById("menu");
+  const openBtn = document.getElementById("menu-open");
+  const closeBtn = document.getElementById("menu-close");
+  function setOpen(open) {
+    if (!menu) return;
+    menu.setAttribute("data-open", String(open));
+    menu.setAttribute("aria-hidden", String(!open));
+    document.body.style.overflow = open ? "hidden" : "";
+  }
+  openBtn?.addEventListener("click", () => setOpen(true));
+  closeBtn?.addEventListener("click", () => setOpen(false));
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") setOpen(false); });
+
+  // keep the in-menu clock in sync
+  const cm = document.getElementById("clock-menu");
+  function tickMenu() {
+    if (!cm) return;
+    cm.textContent = new Intl.DateTimeFormat("en-GB", {
+      hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Athens",
+    }).format(new Date());
+  }
+  tickMenu(); setInterval(tickMenu, 1000 * 20);
+
+  // block placeholder nav clicks until pages exist
+  document.querySelectorAll("[data-placeholder]").forEach((a) =>
+    a.addEventListener("click", (e) => e.preventDefault()));
+</script>

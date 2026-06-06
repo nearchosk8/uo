@@ -1,0 +1,70 @@
+---
+// Custom cursor: a small grey circle that follows the pointer, replacing the
+// native arrow for mouse users only. Uses var(--fg) so it reads as grey across
+// the light/dark/orange themes. Pointer-events: none keeps links clickable.
+---
+<div id="uo-cursor" aria-hidden="true"></div>
+
+<style>
+  #uo-cursor {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--fg);
+    opacity: 0.65;
+    pointer-events: none;
+    z-index: 9999;
+    will-change: transform;
+    transform: translate(-50%, -50%);
+  }
+</style>
+
+<script>
+  const el = document.getElementById("uo-cursor");
+  const fine = window.matchMedia("(pointer: fine)").matches;
+
+  if (el && fine) {
+    document.documentElement.classList.add("has-custom-cursor");
+
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // latest pointer position vs. the eased position the circle is drawn at
+    let tx = 0, ty = 0;     // target
+    let cx = 0, cy = 0;     // current
+    let started = false;
+
+    function draw(x, y) {
+      el.style.transform = `translate(${x}px, ${y}px) translate(-50%,-50%)`;
+    }
+
+    document.addEventListener("mousemove", (e) => {
+      tx = e.clientX;
+      ty = e.clientY;
+      if (!started) {
+        // snap to first position so it doesn't fly in from the corner
+        started = true;
+        cx = tx; cy = ty;
+        draw(cx, cy);
+      }
+      if (reduce) draw(tx, ty);
+    });
+
+    if (!reduce) {
+      const lerp = (a, b, t) => a + (b - a) * t;
+      function tick() {
+        cx = lerp(cx, tx, 0.2);
+        cy = lerp(cy, ty, 0.2);
+        draw(cx, cy);
+        requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    // hide when the pointer leaves the window, show on return
+    document.addEventListener("mouseleave", () => { el.style.opacity = "0"; });
+    document.addEventListener("mouseenter", () => { el.style.opacity = ""; });
+  }
+</script>

@@ -1,0 +1,124 @@
+---
+// Header: wordmark · menu trigger (···) · theme toggles + live Athens clock.
+// NOTE: the design specifies one palette label + Local Time on the right.
+// The light/dark control isn't placed in the comp, so I've added it as a
+// discreet mono toggle beside the palette — flag for your friend to confirm.
+---
+
+<header class="edge uo-header">
+  <a href="/" class="wordmark" aria-label="Untitled Office — home">Untitled Office</a>
+
+  <button id="menu-open" class="dots" aria-label="Open menu" aria-haspopup="true">
+    <span></span><span></span><span></span>
+  </button>
+
+  <div class="controls mono">
+    <div class="toggle" role="group" aria-label="Light or dark">
+      <button data-mode-set="light" type="button">Light</button>
+      <span aria-hidden="true">/</span>
+      <button data-mode-set="dark" type="button">Dark</button>
+    </div>
+    <div class="toggle" role="group" aria-label="Colour palette">
+      <button data-color-set="grayscale" type="button">Grayscale</button>
+      <span aria-hidden="true">/</span>
+      <button data-color-set="orange" type="button">Orange</button>
+    </div>
+    <span class="clock">Local Time:&nbsp;<time id="clock">--:--</time></span>
+  </div>
+</header>
+
+<style>
+  .uo-header {
+    position: relative;
+    z-index: 30;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1rem;
+    padding-block: clamp(1.1rem, 1.8vw, 1.6rem);
+  }
+  .wordmark {
+    font-size: clamp(1.15rem, 1.5vw, 1.55rem);
+    letter-spacing: -0.02em;
+    justify-self: start;
+  }
+  .dots {
+    justify-self: center;
+    display: inline-flex;
+    gap: 4px;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    padding: 10px;
+  }
+  .dots span {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--fg);
+    display: block;
+  }
+  .controls {
+    justify-self: end;
+    display: flex;
+    align-items: center;
+    gap: clamp(0.8rem, 1.6vw, 1.6rem);
+  }
+  .toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+  }
+  .toggle button {
+    background: none;
+    border: 0;
+    cursor: pointer;
+    font: inherit;
+    color: color-mix(in srgb, var(--fg) 45%, transparent);
+    padding: 0;
+    letter-spacing: inherit;
+  }
+  .toggle button[aria-pressed="true"] { color: var(--fg); }
+  .clock { color: var(--fg); white-space: nowrap; }
+
+  @media (max-width: 720px) {
+    .uo-header { grid-template-columns: auto auto; row-gap: 0.4rem; }
+    .dots { order: 3; justify-self: end; }
+    .controls { grid-column: 1 / -1; justify-self: start; flex-wrap: wrap; gap: 0.7rem 1rem; }
+  }
+</style>
+
+<script>
+  const root = document.documentElement;
+  function save(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+  function sync() {
+    const mode = root.getAttribute("data-mode");
+    const color = root.getAttribute("data-color");
+    document.querySelectorAll("[data-mode-set]").forEach((b) =>
+      b.setAttribute("aria-pressed", String(b.dataset.modeSet === mode)));
+    document.querySelectorAll("[data-color-set]").forEach((b) =>
+      b.setAttribute("aria-pressed", String(b.dataset.colorSet === color)));
+  }
+  document.querySelectorAll("[data-mode-set]").forEach((b) =>
+    b.addEventListener("click", () => {
+      root.setAttribute("data-mode", b.dataset.modeSet);
+      save("uo-mode", b.dataset.modeSet); sync();
+    }));
+  document.querySelectorAll("[data-color-set]").forEach((b) =>
+    b.addEventListener("click", () => {
+      root.setAttribute("data-color", b.dataset.colorSet);
+      save("uo-color", b.dataset.colorSet); sync();
+    }));
+  sync();
+
+  // Live local time in Athens (Europe/Athens), 24h, updates each minute.
+  const clock = document.getElementById("clock");
+  function tick() {
+    const t = new Intl.DateTimeFormat("en-GB", {
+      hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Athens",
+    }).format(new Date());
+    if (clock) clock.textContent = t;
+  }
+  tick();
+  setInterval(tick, 1000 * 20);
+</script>

@@ -1,0 +1,32 @@
+---
+import "../styles/global.css";
+import CustomCursor from "../components/CustomCursor.astro";
+const { title = "Untitled Office — Design Office, Athens", description = "Untitled Office is a design office based in Athens, Greece, known for a systematic approach to design-driven projects across Brand, Print, Screen and Space." } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en" data-mode="light" data-color="grayscale">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <!-- Theme bootstrap: applies saved choice before paint to avoid a flash.
+         Default is light + grayscale (per spec). localStorage is guarded so
+         it degrades gracefully where storage is unavailable. -->
+    <script is:inline>
+      (function () {
+        try {
+          var m = localStorage.getItem("uo-mode");
+          var c = localStorage.getItem("uo-color");
+          if (m) document.documentElement.setAttribute("data-mode", m);
+          if (c) document.documentElement.setAttribute("data-color", c);
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <CustomCursor />
+    <slot />
+  </body>
+</html>
