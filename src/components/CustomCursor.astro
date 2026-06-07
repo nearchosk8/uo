@@ -1,7 +1,9 @@
 ---
-// Custom cursor: a small grey circle that follows the pointer, replacing the
-// native arrow for mouse users only. Uses var(--fg) so it reads as grey across
-// the light/dark/orange themes. Pointer-events: none keeps links clickable.
+// Custom cursor: a small NEUTRAL GREY circle that follows the pointer, replacing
+// the native arrow for mouse users only. Its ink flips between var(--fg) (over
+// the page surface) and var(--on-panel) (over an inverted [data-invert] panel)
+// so it always contrasts — in all three themes. pointer-events:none keeps links
+// clickable.
 ---
 <div id="uo-cursor" aria-hidden="true"></div>
 
@@ -13,12 +15,14 @@
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background: var(--fg);
-    opacity: 0.65;
+    /* theme-aware ink, flipped by JS over inverted surfaces; ~0.6 alpha */
+    --cursor-ink: var(--fg);
+    background-color: color-mix(in srgb, var(--cursor-ink) 60%, transparent);
     pointer-events: none;
     z-index: 9999;
     will-change: transform;
     transform: translate(-50%, -50%);
+    transition: background-color 150ms ease;
   }
 </style>
 
@@ -40,6 +44,14 @@
       el.style.transform = `translate(${x}px, ${y}px) translate(-50%,-50%)`;
     }
 
+    // Flip the ink to --on-panel when the surface under the circle is an
+    // inverted panel, else --fg. Guard against null (cursor off-window).
+    function updateInk(x, y) {
+      const under = document.elementFromPoint(x, y);
+      const invert = under && under.closest("[data-invert]");
+      el.style.setProperty("--cursor-ink", invert ? "var(--on-panel)" : "var(--fg)");
+    }
+
     document.addEventListener("mousemove", (e) => {
       tx = e.clientX;
       ty = e.clientY;
@@ -49,7 +61,7 @@
         cx = tx; cy = ty;
         draw(cx, cy);
       }
-      if (reduce) draw(tx, ty);
+      if (reduce) { draw(tx, ty); updateInk(tx, ty); }
     });
 
     if (!reduce) {
@@ -58,6 +70,7 @@
         cx = lerp(cx, tx, 0.2);
         cy = lerp(cy, ty, 0.2);
         draw(cx, cy);
+        updateInk(cx, cy);
         requestAnimationFrame(tick);
       }
       requestAnimationFrame(tick);

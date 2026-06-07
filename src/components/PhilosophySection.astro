@@ -5,13 +5,16 @@ import Figure from "./Figure.astro";
 // region height is a tunable var (--panel-h) — easy to nudge when iterating.
 ---
 <section class="philosophy edge" style="--panel-h: clamp(28rem, 48vw, 42rem)">
-  <div class="ph-head">
+  <!-- The inverted black block as a REAL element (not ::before) so the cursor
+       can detect the surface via elementFromPoint/[data-invert]. -->
+  <div class="ph-panel" data-invert aria-hidden="true"></div>
+  <div class="ph-head" data-invert>
     <h2 class="h-display">
       <span class="u-link">Philosophy</span>
     </h2>
     <span class="idx">(2)</span>
   </div>
-  <p class="copy">
+  <p class="copy" data-invert>
     We approach every project from scratch, with a deep focus on detail, materials, and print.<br />
     From paper selection to final production, our work reflects a dedication to craft and thoughtful design.
   </p>
@@ -30,9 +33,10 @@ import Figure from "./Figure.astro";
     padding-top: clamp(2.5rem, 6vw, 5rem);
     padding-bottom: clamp(3rem, 7vw, 6rem);
   }
-  /* the inverted block sitting behind heading/copy and the top of the images */
-  .philosophy::before {
-    content: "";
+  /* the inverted block sitting behind heading/copy and the top of the images.
+     A real element (kept behind content at z-index 0) so it's hit-testable by
+     elementFromPoint for the cursor's surface detection. */
+  .philosophy > .ph-panel {
     position: absolute;
     inset-inline: var(--edge);
     top: 0;
