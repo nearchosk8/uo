@@ -65,14 +65,15 @@ import philosophy2 from "../assets/philosophy-2.jpeg";
 
   .ph-head { display: flex; justify-content: space-between; align-items: baseline; gap: 2rem; }
   .h-display {
-    font-weight: 400;
+    font-family: var(--ff-display);
+    font-weight: 500; /* display cut ships 500/700 only */
     font-size: clamp(2.6rem, 7vw, 6rem);
     line-height: 0.95;
     letter-spacing: -0.03em;
     margin: 0;
   }
   /* ~0.75em of the heading clamp(2.6rem, 7vw, 6rem), to match About's "(1)" */
-  .idx { font-size: clamp(1.95rem, 5.25vw, 4.5rem); line-height: 1; }
+  .idx { font-family: var(--ff-display); font-weight: 500; font-size: clamp(1.95rem, 5.25vw, 4.5rem); line-height: 1; }
   .copy {
     font-size: clamp(0.95rem, 1.1vw, 1.05rem);
     line-height: 1.4;

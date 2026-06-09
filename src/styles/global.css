@@ -2,21 +2,14 @@
 
 /* ============================================================
    FONTS
-   - Neue Haas Grotesk Display Pro is the studio's real display/body
-     face but is a COMMERCIAL license. Until the woff2 arrives, we use
-     Inter (a neo-grotesque) as a clearly-labeled placeholder.
-     >>> SWAP: replace the "Untitled Grotesk" src below with the real
-         NeueHaasGroteskDisplayPro woff2 to finish. One line. <<<
+   - Neue Haas Grotesk via the Adobe Fonts (Typekit) kit, loaded in
+     Base.astro's <head>. Two families:
+       "neue-haas-grotesk-display"  (500/700) -> --ff-display (big headings)
+       "neue-haas-grotesk-text"     (400+ital/700) -> --ff-sans (body)
    - Roboto Mono (provided) = all small mono labels / captions / clock.
    - Neue Pixel Grotesk (provided) = the split-"U" wordmark + 5—years.
    ============================================================ */
 
-@font-face {
-  font-family: "Untitled Grotesk"; /* PLACEHOLDER for Neue Haas Grotesk Display Pro */
-  src: url("/fonts/Inter-Variable.woff2") format("woff2");
-  font-weight: 100 900;
-  font-display: swap;
-}
 @font-face {
   font-family: "Roboto Mono";
   src: url("/fonts/RobotoMono-Variable.woff2") format("woff2");
@@ -44,7 +37,8 @@
 :root {
   --orange: #ff7523;
 
-  --ff-sans: "Untitled Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --ff-display: "neue-haas-grotesk-display", "Helvetica Neue", Arial, sans-serif;
+  --ff-sans: "neue-haas-grotesk-text", "Helvetica Neue", Arial, sans-serif;
   --ff-mono: "Roboto Mono", ui-monospace, monospace;
   --ff-pixel: "Neue Pixel Grotesk", var(--ff-sans);
 

@@ -3,10 +3,11 @@
 // NOTE: the design specifies one palette label + Local Time on the right.
 // The light/dark control isn't placed in the comp, so I've added it as a
 // discreet mono toggle beside the palette — flag for your friend to confirm.
+import Logo from "./Logo.astro";
 ---
 
 <header class="edge uo-header">
-  <a href="/" class="wordmark" aria-label="Untitled Office — home">Untitled Office</a>
+  <a href="/" class="wordmark" aria-label="Untitled Office — home"><Logo class="logo" /></a>
 
   <button id="menu-open" class="dots" aria-label="Open menu" aria-haspopup="true">
     <span></span><span></span><span></span>
@@ -41,6 +42,15 @@
     font-size: clamp(1.15rem, 1.5vw, 1.55rem);
     letter-spacing: -0.02em;
     justify-self: start;
+    display: inline-flex; /* shrink-wrap the logo, no baseline gap */
+  }
+  /* logo height matches the wordmark text height; width follows the aspect ratio.
+     :global so the rule reaches the <svg> rendered inside Logo.astro (otherwise
+     Astro scopes it to Header and it never matches → svg collapses to 0 width). */
+  .wordmark :global(.logo) {
+    height: clamp(1.15rem, 1.5vw, 1.55rem);
+    width: auto;
+    display: block;
   }
   .dots {
     justify-self: center;
