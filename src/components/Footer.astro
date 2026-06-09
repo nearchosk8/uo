@@ -93,6 +93,37 @@ import Logo from "./Logo.astro";
     display: grid; place-items: center;
     pointer-events: none;
     transition: opacity 150ms ease;
+    /* "slide to unlock" shimmer: dim base ink with a bright band that sweeps
+       left->right. Built from var(--on-panel) (= the label's currentColor) so it
+       adapts to every theme, and clipped to the glyphs so any bg shows through. */
+    --lt-dim: color-mix(in srgb, var(--on-panel) 40%, transparent);
+    --lt-bright: var(--on-panel);
+    background-image: linear-gradient(100deg,
+      var(--lt-dim) 0%, var(--lt-dim) 40%,
+      var(--lt-bright) 50%,
+      var(--lt-dim) 60%, var(--lt-dim) 100%);
+    background-size: 250% 100%;
+    background-repeat: no-repeat;
+    background-position: 100% 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: lt-shimmer 2.5s linear infinite;
+  }
+  /* pause the shine while dragging so it doesn't compete with the gesture */
+  .pill.lt-dragging .pill-label { animation-play-state: paused; }
+  @keyframes lt-shimmer {
+    from { background-position: 100% 0; }
+    to { background-position: 0% 0; }
+  }
+  /* reduced motion: no sweep — show the label at full theme color */
+  @media (prefers-reduced-motion: reduce) {
+    .pill-label {
+      animation: none;
+      background-image: none;
+      color: var(--on-panel);
+      -webkit-text-fill-color: var(--on-panel);
+    }
   }
   .pill-knob {
     position: absolute; top: 50%; left: 0.5rem;
@@ -184,6 +215,7 @@ import Logo from "./Logo.astro";
       knob.setPointerCapture(e.pointerId);
       document.body.style.userSelect = "none";
       knob.style.transition = "none";
+      pill.classList.add("lt-dragging"); // pause the label shimmer during drag
     });
     knob.addEventListener("pointermove", (e) => {
       if (!dragging) return;
@@ -198,6 +230,7 @@ import Logo from "./Logo.astro";
       if (!dragging) return;
       dragging = false;
       document.body.style.userSelect = "";
+      pill.classList.remove("lt-dragging"); // resume the shimmer
       try { knob.releasePointerCapture(e.pointerId); } catch (err) {}
       if (moved >= TAP_PX) {
         suppressClick = true; // a real drag happened — swallow the synthetic click
