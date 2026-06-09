@@ -13,8 +13,11 @@ import Logo from "./Logo.astro";
           <span class="u-link">Begin your</span><br />
           <span class="u-link">journey</span> <span class="u-link">Today</span>
         </p>
-        <button class="pill" type="button" data-placeholder>
-          <span class="pill-arrow" aria-hidden="true">→</span> lets talk
+        <button class="pill" type="button" aria-label="Slide to email us" data-slide-pill>
+          <span class="pill-label" data-pill-label>lets talk</span>
+          <span class="pill-knob" data-pill-knob aria-hidden="true">
+            <svg class="pill-arrow" viewBox="0 0 874.62 874.62" fill="currentColor" aria-hidden="true"><path d="M437.31,40.61c-219.09,0-396.7,177.61-396.69,396.7,0,219.09,177.61,396.7,396.7,396.69,219.1,0,396.7-177.61,396.7-396.7,0-219.1-177.61-396.7-396.7-396.7M683.96,405.08v64.45s0,.19,0,.19c0,0-.02,0-.04,0h0s-.58,0-.58,0c-76.65,21.66-128.41,79.02-128.41,168.01,0,18.35,2.2,35.45,6.43,51.02h-55.67c-2.96-16.16-4.57-33.17-4.57-51.02,0-69.54,23.85-126.8,64.37-168.01H190.66s0-62.1,0-62.1h377.69c-.93-.92-1.92-1.78-2.84-2.72-40.52-41.2-64.37-98.47-64.37-168.02,0-17.85,1.6-34.86,4.57-51.02h55.67c-4.23,15.57-6.43,32.66-6.43,51.02,0,89,51.77,146.36,128.43,168.02.07.04.17.06.26.08.11-.03.22-.06.33-.09v.19Z"/></svg>
+          </span>
         </button>
       </div>
 
@@ -71,16 +74,38 @@ import Logo from "./Logo.astro";
   .cta-right { justify-self: end; text-align: left; width: 100%; max-width: 22rem; }
   .socials { display: flex; gap: 1rem; justify-content: center; padding-top: 0.4rem; }
 
+  /* slide-to-unlock: the pill is the track, .pill-knob is the draggable arrow */
   .pill {
-    display: inline-flex; align-items: center; gap: 0.6rem;
+    position: relative;
+    display: block;
+    width: 11rem;
+    height: 2.7rem;
     background: color-mix(in srgb, var(--on-panel) 28%, transparent);
     color: var(--on-panel);
     border: 0; border-radius: 999px; cursor: pointer;
-    padding: 0.5rem 1.1rem 0.5rem 0.5rem; font: inherit; font-size: 0.95rem;
+    padding: 0.5rem; font: inherit; font-size: 0.95rem;
+    overflow: hidden;
+    touch-action: none;            /* let the knob own the gesture on touch */
+    -webkit-user-select: none; user-select: none;
   }
+  .pill-label {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    pointer-events: none;
+    transition: opacity 150ms ease;
+  }
+  .pill-knob {
+    position: absolute; top: 50%; left: 0.5rem;
+    width: 1.7rem; height: 1.7rem;
+    transform: translate(0, -50%);
+    cursor: grab;
+    touch-action: none;
+  }
+  .pill-knob:active { cursor: grabbing; }
+  /* arrow.svg is itself a circle-with-arrow; fill follows the theme via currentColor */
   .pill-arrow {
-    display: inline-grid; place-items: center; width: 1.7rem; height: 1.7rem;
-    background: var(--on-panel); color: var(--panel); border-radius: 50%;
+    display: block; width: 100%; height: 100%; fill: currentColor;
+    pointer-events: none;
   }
   .email-field { display: flex; align-items: center; gap: 0.5rem; border-bottom: 1px solid var(--on-panel); padding-bottom: 0.5rem; }
   .email-field input { flex: 1; background: none; border: 0; color: var(--on-panel); font: inherit; font-size: 1rem; outline: none; }
@@ -113,3 +138,82 @@ import Logo from "./Logo.astro";
     .foot-details { grid-template-columns: 1fr; }
   }
 </style>
+
+<script>
+  // "lets talk" slide-to-unlock: drag the arrow knob to the right end to open a
+  // mailto. Pointer events (mouse + touch). Click / Enter / Space also fire the
+  // mailto as an accessible, drag-free fallback.
+  const pill = document.querySelector("[data-slide-pill]");
+  if (pill instanceof HTMLElement) {
+    const knob = pill.querySelector("[data-pill-knob]");
+    const label = pill.querySelector("[data-pill-label]");
+    const MAILTO = "mailto:hello@untitledoffice.gr";
+    const SUCCESS = 0.9;     // fraction of travel needed to count as "unlocked"
+    const TAP_PX = 6;        // movement under this = a tap, not a drag
+
+    let dragging = false;
+    let startX = 0;
+    let startT = 0;         // knob translateX at drag start (px)
+    let curT = 0;            // current knob translateX (px)
+    let max = 0;            // max travel (px)
+    let moved = 0;          // largest movement this interaction
+    let suppressClick = false;
+
+    function open() { window.location.href = MAILTO; }
+
+    function pad() { return parseFloat(getComputedStyle(pill).paddingLeft) || 0; }
+    function computeMax() {
+      return Math.max(0, pill.clientWidth - knob.offsetWidth - 2 * pad());
+    }
+    function setT(t, animate) {
+      curT = t;
+      knob.style.transition = animate ? "transform 250ms ease" : "none";
+      knob.style.transform = `translate(${t}px, -50%)`;
+      if (label) {
+        const p = max > 0 ? Math.min(1, t / max) : 0;
+        label.style.opacity = String(1 - p * 0.85); // fade out as it nears the end
+      }
+    }
+
+    knob.addEventListener("pointerdown", (e) => {
+      dragging = true;
+      moved = 0;
+      max = computeMax();
+      startX = e.clientX;
+      startT = curT;
+      knob.setPointerCapture(e.pointerId);
+      document.body.style.userSelect = "none";
+      knob.style.transition = "none";
+    });
+    knob.addEventListener("pointermove", (e) => {
+      if (!dragging) return;
+      const delta = e.clientX - startX;
+      moved = Math.max(moved, Math.abs(delta));
+      let t = startT + delta;
+      if (t < 0) t = 0;
+      if (t > max) t = max;
+      setT(t, false);
+    });
+    function endDrag(e) {
+      if (!dragging) return;
+      dragging = false;
+      document.body.style.userSelect = "";
+      try { knob.releasePointerCapture(e.pointerId); } catch (err) {}
+      if (moved >= TAP_PX) {
+        suppressClick = true; // a real drag happened — swallow the synthetic click
+        if (max > 0 && curT >= max * SUCCESS) { setT(max, true); open(); }
+        else setT(0, true);
+      }
+      // else: treat as a tap and let the native click handler open()
+    }
+    knob.addEventListener("pointerup", endDrag);
+    knob.addEventListener("pointercancel", endDrag);
+
+    // Accessible fallback: plain click and Enter/Space (both fire a click on a
+    // <button>) open the mailto — unless a drag just happened.
+    pill.addEventListener("click", (e) => {
+      if (suppressClick) { suppressClick = false; e.preventDefault(); return; }
+      open();
+    });
+  }
+</script>
