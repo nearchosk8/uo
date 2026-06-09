@@ -1,6 +1,5 @@
 ---
-import Figure from "./Figure.astro";
-import office1 from "../assets/office-1.jpeg";
+import AboutCarousel from "./AboutCarousel.astro";
 ---
 <section class="about edge">
   <div class="about-text">
@@ -25,21 +24,16 @@ import office1 from "../assets/office-1.jpeg";
   </div>
 
   <div class="about-img">
-    <Figure
-      label="office"
-      index="1/3"
-      ext=".jpeg"
-      ratio="3 / 4"
-      image={office1}
-      alt="Untitled Office — reviewing printed work in the studio"
-    />
+    <AboutCarousel />
   </div>
 </section>
 
 <style>
   .about {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    /* cap the image column at the design width (~46% of the 1900px artboard)
+       so the photo holds its size on wide screens; text (1fr) takes the rest */
+    grid-template-columns: 1fr minmax(0, 874.62px);
     gap: clamp(1.5rem, 4vw, 4rem);
     align-items: start;
     padding-top: clamp(1rem, 3vw, 3rem);
