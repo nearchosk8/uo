@@ -219,8 +219,15 @@ import Logo from "./Logo.astro";
       try { knob.releasePointerCapture(e.pointerId); } catch (err) {}
       if (moved >= TAP_PX) {
         suppressClick = true; // a real drag happened — swallow the synthetic click
-        if (max > 0 && curT >= max * SUCCESS) { setT(max, true); open(); }
-        else setT(0, true);
+        if (max > 0 && curT >= max * SUCCESS) {
+          setT(max, true);
+          open();
+          // brief beat so the success registers, then glide back to the start so
+          // the control is immediately reusable (shimmer resumes as curT -> 0).
+          setTimeout(() => setT(0, true), 200);
+        } else {
+          setT(0, true); // incomplete — snap back
+        }
       }
       // else: treat as a tap and let the native click handler open()
     }
