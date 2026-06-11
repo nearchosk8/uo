@@ -18,19 +18,20 @@ const aboutSlides = [
       <span class="idx">(1)</span>
     </Reveal>
 
-    <Reveal as="p" class="mono label">About Us</Reveal>
-    <Reveal as="p" class="lede">
-      Founded in 2020 in Athens, Greece.<br />
-      Our ambition is not to use a title for our office<br />
-      because our work speaks itself and no descriptions needed.
-    </Reveal>
-    <Reveal as="p" class="lede">
-      <span class="u-link">The language is visual</span> &amp;
-      <span class="u-link">you have the vision and we add the title.</span>
-    </Reveal>
-    <Reveal as="p" class="lede">
-      <a class="u-link" href="#" data-placeholder>Want to see what we mean? Explore recent works</a>
-    </Reveal>
+    <div class="about-lede">
+      <Reveal as="p" class="lede">
+        Founded in 2020 in Athens, Greece.<br />
+        Our ambition is not to use a title for our office<br />
+        because our work speaks itself and no descriptions needed.
+      </Reveal>
+      <Reveal as="p" class="lede">
+        <span class="u-link">The language is visual</span> &amp;
+        <span class="u-link">you have the vision and we add the title.</span>
+      </Reveal>
+      <Reveal as="p" class="lede">
+        <a class="u-link" href="#" data-placeholder>Want to see what we mean? Explore recent works</a>
+      </Reveal>
+    </div>
   </div>
 
   <div class="about-img">
@@ -41,36 +42,48 @@ const aboutSlides = [
 <style>
   .about {
     display: grid;
-    /* cap the image column at the design width (~46% of the 1900px artboard)
-       so the photo holds its size on wide screens; text (1fr) takes the rest */
-    grid-template-columns: 1fr minmax(0, 874.62px);
+    /* proportional split matching the artboard (image ≈ 874.62/1900 ≈ 46%) so the
+       text/gap/image proportions stay identical at every width */
+    grid-template-columns: 1fr 46%;
     gap: clamp(1.5rem, 4vw, 4rem);
-    align-items: start;
+    /* stretch so the text column matches the (taller) image's row height, letting
+       the lede absolutely-center against the image while the heading stays on top */
+    align-items: stretch;
     padding-top: clamp(1rem, 3vw, 3rem);
     padding-bottom: clamp(3rem, 7vw, 6rem);
+  }
+  .about-text { position: relative; }
+  .about-lede {
+    position: absolute;
+    top: 50%; left: 0; right: 0;
+    transform: translateY(-50%);
   }
   .h-display {
     font-family: var(--ff-display);
     font-weight: 500; /* display cut ships 500/700 only */
-    font-size: clamp(2.6rem, 6.5vw, 5.5rem);
-    line-height: 0.98;
+    font-size: clamp(2.6rem, 7vw, 6rem);
+    line-height: 0.95;
     letter-spacing: -0.03em;
     margin: 0 0 clamp(1.4rem, 3vw, 2.4rem);
     position: relative;
   }
   .h-display .idx { font-size: 0.75em; vertical-align: baseline; margin-left: 0.4em; letter-spacing: -0.02em; }
-  .label { margin: 0 0 0.5rem; }
   .lede {
-    font-size: clamp(0.95rem, 1.15vw, 1.1rem);
+    font-size: clamp(1rem, 1.74vw, 33px);
     line-height: 1.4;
-    margin: 0 0 1.4rem;
-    max-width: 40ch;
+    /* em-based so the gap between the three groups ≈ one blank line at any size */
+    margin: 0 0 1.5em;
+    /* break only at the authored <br>s — never auto-wrap into different rows */
+    white-space: nowrap;
   }
   .about-img { justify-self: end; width: 100%; }
 
   @media (max-width: 820px) {
-    .about { grid-template-columns: 1fr; }
+    .about { grid-template-columns: 1fr; align-items: start; }
     .about-img { order: -1; }
-    .h-display { font-size: clamp(3rem, 13vw, 4.5rem); }
+    /* phones can't fit the fixed lines — let the lede wrap normally, readable size */
+    .lede { white-space: normal; font-size: clamp(1rem, 3.4vw, 1.25rem); }
+    /* revert the desktop centering: normal stacked flow */
+    .about-lede { position: static; transform: none; }
   }
 </style>

@@ -77,10 +77,11 @@ const rightSlides = [
   /* ~0.75em of the heading clamp(2.6rem, 7vw, 6rem), to match About's "(1)" */
   .idx { font-family: var(--ff-display); font-weight: 500; font-size: clamp(1.95rem, 5.25vw, 4.5rem); line-height: 1; }
   .copy {
-    font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+    font-size: clamp(1rem, 1.74vw, 33px);
     line-height: 1.4;
-    max-width: 62ch;
     margin: clamp(1.2rem, 2.5vw, 2rem) 0 0;
+    /* break only at the authored <br> — never auto-wrap into different rows */
+    white-space: nowrap;
   }
   .ph-images {
     display: grid;
@@ -95,5 +96,7 @@ const rightSlides = [
   @media (max-width: 720px) {
     .philosophy { --panel-h: clamp(18rem, 64vw, 30rem); }
     .ph-images { grid-template-columns: 1fr; }
+    /* phones can't fit the fixed lines — let the copy wrap normally, readable size */
+    .copy { white-space: normal; font-size: clamp(1rem, 3.6vw, 1.2rem); }
   }
 </style>

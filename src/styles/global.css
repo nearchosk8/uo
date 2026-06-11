@@ -43,6 +43,7 @@
   --ff-pixel: "Neue Pixel Grotesk", var(--ff-sans);
 
   --edge: clamp(1.25rem, 2.6vw, 3rem); /* page side gutter */
+  --maxw: 1900px;                       /* ≈ the comp artboard width */
 }
 
 /* light grayscale (default) */
@@ -195,7 +196,28 @@ html.js-reveal .logo--animate-u.playing .u-piece { opacity: 1; transform: none; 
   html.js-reveal .logo--animate-u .u-piece { opacity: 1; transform: none; transition: none; }
 }
 
-.edge { padding-inline: var(--edge); }
+/* ============================================================
+   SECTION REVEAL — sticky "folder" footer.
+   <main> is an opaque panel (z-index 1) with rounded BOTTOM corners that
+   scrolls up over the footer, which is pinned to the viewport bottom beneath
+   it (sticky; z-index 0). Pure CSS, no JS. Relies on no ancestor of .foot
+   having overflow:hidden/auto/scroll (none currently do).
+   ============================================================ */
+main {
+  position: relative;
+  z-index: 1;
+  background: var(--bg);
+  border-bottom-left-radius: clamp(30px, 3.4vw, 60px);
+  border-bottom-right-radius: clamp(30px, 3.4vw, 60px);
+}
+.foot {
+  position: sticky;
+  bottom: 0;
+  z-index: 0;
+}
+
+/* page gutter + cap: fluid below --maxw, centered at the designed width above it */
+.edge { max-width: var(--maxw); margin-inline: auto; padding-inline: var(--edge); }
 
 /* contrasting rounded panel (philosophy + footer) */
 .panel {

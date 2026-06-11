@@ -98,9 +98,13 @@ import Logo from "./Logo.astro";
   .clock { color: var(--fg); white-space: nowrap; }
 
   @media (max-width: 720px) {
-    .uo-header { grid-template-columns: auto auto; row-gap: 0.4rem; }
-    .dots { grid-column: 1 / -1; justify-self: center; }
-    .controls { grid-column: 1 / -1; justify-self: start; flex-wrap: wrap; gap: 0.7rem 1rem; }
+    .uo-header { grid-template-columns: 1fr auto; row-gap: 0.4rem; }
+    .dots { grid-column: 2; justify-self: end; }
+    /* center the controls row in the band between the wordmark and the first
+       image: space above is only the 0.4rem row-gap, space below is ~2.1rem
+       (header padding-bottom 1.1rem + About padding-top ~1rem). Add the
+       difference (~1.7rem) on top so the gaps above/below become equal. */
+    .controls { grid-column: 1 / -1; justify-self: start; flex-wrap: wrap; gap: 0.7rem 1rem; margin-top: 1.7rem; }
   }
 </style>
 
