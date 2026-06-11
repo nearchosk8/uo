@@ -184,11 +184,11 @@ html.js-reveal .logo--animate-u .u-piece {
   transform: scale(0.85);
   transform-box: fill-box;     /* scale around each piece's own centre */
   transform-origin: center;
-  transition: opacity 300ms ease-out, transform 300ms ease-out;
+  transition: opacity 480ms ease-out, transform 480ms ease-out;
 }
 html.js-reveal .logo--animate-u .u-left   { transition-delay: 0ms; }
-html.js-reveal .logo--animate-u .u-bottom { transition-delay: 140ms; }
-html.js-reveal .logo--animate-u .u-right  { transition-delay: 280ms; }
+html.js-reveal .logo--animate-u .u-bottom { transition-delay: 260ms; }
+html.js-reveal .logo--animate-u .u-right  { transition-delay: 520ms; }
 html.js-reveal .logo--animate-u.playing .u-piece { opacity: 1; transform: none; }
 /* reduced motion: show the full U instantly, no build */
 @media (prefers-reduced-motion: reduce) {

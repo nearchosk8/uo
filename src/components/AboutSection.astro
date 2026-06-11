@@ -1,6 +1,15 @@
 ---
-import AboutCarousel from "./AboutCarousel.astro";
+import Carousel from "./Carousel.astro";
 import Reveal from "./Reveal.astro";
+import office1 from "../assets/office-1.jpeg";
+import office2 from "../assets/office-2.jpeg";
+import office3 from "../assets/office-3.jpeg";
+
+const aboutSlides = [
+  { img: office1, alt: "Untitled Office — reviewing printed work in the studio" },
+  { img: office2, alt: "Untitled Office — inside the studio" },
+  { img: office3, alt: "Untitled Office — studio work in progress" },
+];
 ---
 <section class="about edge">
   <div class="about-text">
@@ -25,7 +34,7 @@ import Reveal from "./Reveal.astro";
   </div>
 
   <div class="about-img">
-    <AboutCarousel />
+    <Carousel slides={aboutSlides} leftLabel="office" ext=".jpeg" ratio="1 / 1" />
   </div>
 </section>
 
