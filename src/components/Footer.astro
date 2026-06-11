@@ -66,14 +66,15 @@ import Logo from "./Logo.astro";
 
   /* slide-to-unlock: the pill is the track, .pill-knob is the draggable arrow */
   .pill {
+    --pill-h: 2.7rem;
     position: relative;
     display: block;
     width: 11rem;
-    height: 2.7rem;
+    height: var(--pill-h);
     background: color-mix(in srgb, var(--on-panel) 28%, transparent);
     color: var(--on-panel);
     border: 0; border-radius: 999px; cursor: pointer;
-    padding: 0.5rem; font: inherit; font-size: 0.95rem;
+    padding: 0; font: inherit; font-size: 0.95rem;
     overflow: hidden;
     touch-action: none;            /* let the knob own the gesture on touch */
     -webkit-user-select: none; user-select: none;
@@ -115,9 +116,11 @@ import Logo from "./Logo.astro";
       -webkit-text-fill-color: var(--on-panel);
     }
   }
+  /* knob is a perfect circle as tall as the pill, flush at the left rounded end
+     and flush top/bottom (no gap). The arrow.svg fills it (width/height 100%). */
   .pill-knob {
-    position: absolute; top: 50%; left: 0.5rem;
-    width: 1.7rem; height: 1.7rem;
+    position: absolute; top: 50%; left: 0;
+    width: var(--pill-h); height: var(--pill-h);
     transform: translate(0, -50%);
     cursor: grab;
     touch-action: none;
