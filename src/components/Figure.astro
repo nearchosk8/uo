@@ -11,8 +11,10 @@ const { label = "office", index = "1/3", ext = ".jpeg", ratio = "1 / 1", image, 
       ? <Image src={image} alt={alt} class="img" />
       : <span class="mono">PLACEHOLDER IMAGE</span>}
   </div>
-  <figcaption class="cap mono">
-    <span>{label}</span><span>({index})</span><span>{ext}</span>
+  <figcaption class="reveal-on-scroll">
+    <span class="reveal-inner">
+      <span class="cap mono"><span>{label}</span><span>({index})</span><span>{ext}</span></span>
+    </span>
   </figcaption>
 </figure>
 

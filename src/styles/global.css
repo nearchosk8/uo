@@ -5,7 +5,7 @@
    - Neue Haas Grotesk via the Adobe Fonts (Typekit) kit, loaded in
      Base.astro's <head>. Two families:
        "neue-haas-grotesk-display"  (500/700) -> --ff-display (big headings)
-       "neue-haas-grotesk-text"     (400+ital/700) -> --ff-sans (body)
+       "neue-haas-grotesk-display"  -> --ff-sans (body) and --ff-display
    - Roboto Mono (provided) = all small mono labels / captions / clock.
    - Neue Pixel Grotesk (provided) = the split-"U" wordmark + 5—years.
    ============================================================ */
@@ -38,7 +38,7 @@
   --orange: #ff7523;
 
   --ff-display: "neue-haas-grotesk-display", "Helvetica Neue", Arial, sans-serif;
-  --ff-sans: "neue-haas-grotesk-text", "Helvetica Neue", Arial, sans-serif;
+  --ff-sans: "neue-haas-grotesk-display", "Helvetica Neue", Arial, sans-serif;
   --ff-mono: "Roboto Mono", ui-monospace, monospace;
   --ff-pixel: "Neue Pixel Grotesk", var(--ff-sans);
 
@@ -119,6 +119,80 @@ a { color: inherit; text-decoration: none; }
   text-decoration: underline;
   text-underline-offset: 0.14em;
   text-decoration-thickness: 0.055em;
+}
+
+/* hover-drawn underline: ONE thin continuous line per phrase, no underline at
+   rest, drawn left->right on hover/focus via a bottom-anchored ::after (so it
+   never shifts layout). Used on the About / Philosophy / footer CTA phrases. */
+.u-line {
+  position: relative;
+  display: inline-block;
+  text-decoration: none;
+}
+.u-line::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -0.02em;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 280ms ease;
+}
+.u-line:hover::after,
+.u-line:focus-visible::after { transform: scaleX(1); }
+
+/* ============================================================
+   SCROLL REVEAL — masked slide-up, identical feel to the burger nav.
+   The PRE-STATE (hidden) is scoped under html.js-reveal, added by a tiny inline
+   <head> script before first paint. With no JS the class is absent → text shows
+   normally (no flash, nothing ever permanently hidden).
+   - .reveal-on-scroll = the mask (overflow hidden + descender breathing room)
+   - .reveal-inner     = the element that slides up from translateY(110%)
+   IntersectionObserver (Base.astro) adds .revealed on first view (once).
+   ============================================================ */
+html.js-reveal .reveal-on-scroll {
+  display: block;
+  overflow: hidden;
+  /* breathing room so the mask never clips descenders (g/y/p) at rest;
+     the matching negative margin keeps layout unchanged */
+  padding-bottom: 0.2em;
+  margin-bottom: -0.2em;
+}
+html.js-reveal .reveal-inner {
+  display: block;
+  transform: translateY(110%);
+  transition: transform 0.46s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: transform;
+}
+html.js-reveal .reveal-on-scroll.revealed .reveal-inner { transform: translateY(0); }
+/* reduced motion: never hide — show everything in final position */
+@media (prefers-reduced-motion: reduce) {
+  html.js-reveal .reveal-inner { transform: none; transition: none; }
+}
+
+/* ============================================================
+   FOOTER LOGO "U" BUILD — the 3 U pieces pop in left -> bottom -> right once the
+   footer logo enters view (.playing added by Logo.astro's IntersectionObserver).
+   Pre-state gated by html.js-reveal so with no JS the U is fully visible.
+   ============================================================ */
+html.js-reveal .logo--animate-u .u-piece {
+  opacity: 0;
+  transform: scale(0.85);
+  transform-box: fill-box;     /* scale around each piece's own centre */
+  transform-origin: center;
+  transition: opacity 300ms ease-out, transform 300ms ease-out;
+}
+html.js-reveal .logo--animate-u .u-left   { transition-delay: 0ms; }
+html.js-reveal .logo--animate-u .u-bottom { transition-delay: 140ms; }
+html.js-reveal .logo--animate-u .u-right  { transition-delay: 280ms; }
+html.js-reveal .logo--animate-u.playing .u-piece { opacity: 1; transform: none; }
+/* reduced motion: show the full U instantly, no build */
+@media (prefers-reduced-motion: reduce) {
+  html.js-reveal .logo--animate-u .u-piece { opacity: 1; transform: none; transition: none; }
 }
 
 .edge { padding-inline: var(--edge); }

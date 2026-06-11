@@ -27,9 +27,55 @@ const { title = "Untitled Office — Design Office, Athens", description = "Unti
         } catch (e) {}
       })();
     </script>
+    <!-- Mark JS-on BEFORE paint so the reveal pre-state (hidden) applies with no
+         flash. With no JS this never runs → text stays visible. -->
+    <script is:inline>
+      document.documentElement.classList.add("js-reveal");
+    </script>
   </head>
   <body>
     <CustomCursor />
     <slot />
   </body>
 </html>
+
+<script>
+  // Masked slide-up reveal on first scroll into view (mirrors the burger nav).
+  // Staggers siblings within their parent, reveals each element once.
+  (function () {
+    const els = Array.prototype.slice.call(
+      document.querySelectorAll(".reveal-on-scroll")
+    );
+    if (!els.length) return;
+
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce || !("IntersectionObserver" in window)) {
+      els.forEach((el) => el.classList.add("revealed")); // show statically
+      return;
+    }
+
+    // cascade: delay by index among reveal-siblings in the same parent
+    els.forEach((el) => {
+      const parent = el.parentElement;
+      if (!parent) return;
+      const sibs = Array.prototype.filter.call(parent.children, (c) =>
+        c.classList && c.classList.contains("reveal-on-scroll")
+      );
+      const idx = sibs.indexOf(el);
+      if (idx > 0) el.style.setProperty("--reveal-delay", idx * 80 + "ms");
+    });
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("revealed");
+            io.unobserve(entry.target); // animate once
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+    els.forEach((el) => io.observe(el));
+  })();
+</script>

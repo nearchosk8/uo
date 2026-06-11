@@ -1,0 +1,11 @@
+---
+// Masked slide-up reveal (mirrors the burger nav). The outer element masks; the
+// inner <span> is what slides up from behind it on first scroll into view.
+// Behaviour lives in global.css (.reveal-on-scroll / .reveal-inner) + the
+// IntersectionObserver in Base.astro. `as` picks the wrapper tag (h1, p, …).
+const { as = "div", class: className, ...rest } = Astro.props;
+const Tag = as;
+---
+<Tag class:list={["reveal-on-scroll", className]} {...rest}>
+  <span class="reveal-inner"><slot /></span>
+</Tag>

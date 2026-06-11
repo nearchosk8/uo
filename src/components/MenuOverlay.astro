@@ -4,6 +4,7 @@
 // viewport to cover the page (600ms ease-out) and retracts straight UP to
 // close (450ms ease-in). Clean opaque slide, no fade.
 // Nav targets are placeholders (#) until the other pages are designed.
+import SocialIcon from "./SocialIcon.astro";
 const nav = ["Home", "About", "Gallery", "Begin your journey", "Contact", "Selected Clients", "Shop"];
 ---
 
@@ -25,9 +26,9 @@ const nav = ["Home", "About", "Gallery", "Begin your journey", "Contact", "Selec
     <div class="menu-foot mono">
       <span>©2025 | ALL RIGHTS RESERVED</span>
       <span class="socials">
-        <a class="u-link" href="#">LinkedIn</a>
-        <a class="u-link" href="#">Instagram</a>
-        <a class="u-link" href="#">Bēhance</a>
+        <a class="social" href="https://www.linkedin.com/in/alexandros-dimopoulos-58b5b9194/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><SocialIcon name="linkedin" /></a>
+        <a class="social" href="https://www.instagram.com/untitled_office/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><SocialIcon name="instagram" /></a>
+        <a class="social" href="https://www.behance.net/alexandrosdimopoulos" target="_blank" rel="noopener noreferrer" aria-label="Behance"><SocialIcon name="behance" /></a>
       </span>
     </div>
   </div>
@@ -60,7 +61,8 @@ const nav = ["Home", "About", "Gallery", "Begin your journey", "Contact", "Selec
     display: flex; justify-content: space-between; align-items: center;
     padding-bottom: 0.9rem;
   }
-  .close { background: none; border: 0; cursor: pointer; font: inherit; color: inherit; letter-spacing: inherit; text-transform: inherit; padding: 0; }
+  .close { background: none; border: 0; cursor: pointer; font: inherit; color: inherit; letter-spacing: inherit; text-transform: inherit; padding: 0; transition: color 180ms ease; }
+  .close:hover, .close:focus-visible { color: var(--muted); }
 
   .menu-nav { display: flex; flex-direction: column; }
   .menu-nav a {
@@ -85,7 +87,14 @@ const nav = ["Home", "About", "Gallery", "Begin your journey", "Contact", "Selec
   }
 
   .menu-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 1.4rem; }
-  .socials { display: inline-flex; gap: 1rem; }
+  .socials { display: inline-flex; align-items: center; gap: 1rem; }
+  /* social logos inherit currentColor (the menu's --fg) and recolor on hover/focus */
+  .social {
+    display: inline-flex; align-items: center;
+    height: 20px; color: var(--fg);
+    transition: color 180ms ease;
+  }
+  .social:hover, .social:focus-visible { color: var(--muted); }
 
   @media (max-width: 720px) {
     .menu-foot { flex-direction: column; align-items: flex-start; gap: 0.6rem; }

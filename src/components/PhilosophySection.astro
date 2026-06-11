@@ -1,5 +1,6 @@
 ---
 import Figure from "./Figure.astro";
+import Reveal from "./Reveal.astro";
 import philosophy1 from "../assets/philosophy-1.jpeg";
 import philosophy2 from "../assets/philosophy-2.jpeg";
 // Inverted rounded panel. The two images intentionally spill below the panel's
@@ -11,15 +12,15 @@ import philosophy2 from "../assets/philosophy-2.jpeg";
        can detect the surface via elementFromPoint/[data-invert]. -->
   <div class="ph-panel" data-invert aria-hidden="true"></div>
   <div class="ph-head" data-invert>
-    <h2 class="h-display">
-      <span class="u-link">Philosophy</span>
-    </h2>
+    <Reveal as="h2" class="h-display">
+      <span class="u-line">Philosophy</span>
+    </Reveal>
     <span class="idx">(2)</span>
   </div>
-  <p class="copy" data-invert>
+  <Reveal as="p" class="copy" data-invert>
     We approach every project from scratch, with a deep focus on detail, materials, and print.<br />
     From paper selection to final production, our work reflects a dedication to craft and thoughtful design.
-  </p>
+  </Reveal>
 
   <div class="ph-images">
     <Figure

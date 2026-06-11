@@ -2,15 +2,17 @@
 // Footer = inverted rounded panel (matches comp). The "lets talk" slide-to-
 // unlock pill opens a mailto. Giant wordmark is the logo SVG, filling the panel.
 import Logo from "./Logo.astro";
+import SocialIcon from "./SocialIcon.astro";
+import Reveal from "./Reveal.astro";
 ---
 <footer class="foot">
   <div class="foot-panel panel edge" data-invert>
     <div class="foot-grid">
       <div class="cta-left">
-        <span class="mono label">Lets Talk</span>
+        <Reveal as="span" class="mono label">Lets Talk</Reveal>
         <p class="cta-h">
-          <span class="u-link">Begin your</span><br />
-          <span class="u-link">journey</span> <span class="u-link">Today</span>
+          <span class="reveal-on-scroll"><span class="cta-line reveal-inner">Begin your</span></span>
+          <span class="reveal-on-scroll"><span class="cta-line reveal-inner">journey Today</span></span>
         </p>
         <button class="pill" type="button" aria-label="Slide to email us" data-slide-pill>
           <span class="pill-label" data-pill-label>lets talk</span>
@@ -20,22 +22,26 @@ import Logo from "./Logo.astro";
         </button>
       </div>
 
-      <div class="socials mono">
-        <a class="u-link" href="#">Instagram</a>
-        <a class="u-link" href="#">LinkedIn</a>
-        <a class="u-link" href="#">Bēhance</a>
+      <div class="socials">
+        <a class="social" href="https://www.instagram.com/untitled_office/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><SocialIcon name="instagram" /></a>
+        <a class="social" href="https://www.linkedin.com/in/alexandros-dimopoulos-58b5b9194/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><SocialIcon name="linkedin" /></a>
+        <a class="social" href="https://www.behance.net/alexandrosdimopoulos" target="_blank" rel="noopener noreferrer" aria-label="Behance"><SocialIcon name="behance" /></a>
       </div>
     </div>
 
-    <div class="foot-details">
-      <div><span class="d-label">New journey</span><a class="d-val" href="mailto:hello@untitledoffice.gr">hello@untitledoffice.gr</a></div>
-      <div><span class="d-label">Phone:</span><span class="d-val">(+30) 210 722 1043 | (+30) 6972737996</span></div>
-      <div><span class="d-label">Contact</span><a class="d-val" href="mailto:info@untitledoffice.gr">info@untitledoffice.gr</a></div>
-      <div><span class="d-label">Ath (Gr)</span><span class="d-val">Ippokratous 7, 106 79</span></div>
+    <div class="reveal-on-scroll">
+      <div class="reveal-inner">
+        <div class="foot-details">
+          <div><span class="d-label">New journey</span><a class="d-val" href="mailto:hello@untitledoffice.gr">hello@untitledoffice.gr</a></div>
+          <div><span class="d-label">Phone:</span><span class="d-val">(+30) 210 722 1043 | (+30) 6972737996</span></div>
+          <div><span class="d-label">Contact</span><a class="d-val" href="mailto:info@untitledoffice.gr">info@untitledoffice.gr</a></div>
+          <div><span class="d-label">Ath (Gr)</span><span class="d-val">Ippokratous 7, 106 79</span></div>
+        </div>
+      </div>
     </div>
 
     <hr class="rule" />
-    <Logo class="bigmark" />
+    <Logo animateU class="bigmark" />
   </div>
 </footer>
 
@@ -62,7 +68,32 @@ import Logo from "./Logo.astro";
     letter-spacing: -0.02em;
     margin: 0 0 clamp(1rem, 2vw, 1.6rem);
   }
-  .socials { display: flex; gap: 1rem; justify-content: flex-end; padding-top: 0.4rem; }
+  /* two stacked lines; width:fit-content so each underline matches its text width.
+     block => the lines stack back into two rows. */
+  .cta-line { display: block; width: fit-content; position: relative; }
+  .cta-line::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -0.02em;
+    width: 100%;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 280ms ease;
+  }
+  /* hover/focus ANYWHERE on the heading draws BOTH lines' underlines together */
+  .cta-h:hover .cta-line::after,
+  .cta-h:focus-visible .cta-line::after { transform: scaleX(1); }
+  .socials { display: flex; align-items: center; gap: 1rem; justify-content: flex-end; padding-top: 0.4rem; }
+  /* icons inherit color (currentColor) and recolor on hover/focus per theme */
+  .social {
+    display: inline-flex; align-items: center;
+    height: 20px; color: var(--on-panel);
+    transition: color 180ms ease;
+  }
+  .social:hover, .social:focus-visible { color: var(--muted); }
 
   /* slide-to-unlock: the pill is the track, .pill-knob is the draggable arrow */
   .pill {

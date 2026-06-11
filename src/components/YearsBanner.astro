@@ -2,10 +2,11 @@
 // Oversized display line. Set in Neue Pixel Grotesk (provided) to carry the
 // glitch character seen in the comp. The comp pixelates only the "ea" cluster;
 // once you confirm, I can mask it to that exact treatment.
+import Reveal from "./Reveal.astro";
 ---
 <section class="years edge">
-  <div class="years-word">5—y<span class="pixel-e">e</span>ars</div>
-  <span class="years-tag mono">©UNTITLED OFFICE | 2025</span>
+  <Reveal as="div" class="years-word">5—y<span class="pixel-e">e</span>ars</Reveal>
+  <Reveal as="span" class="years-tag mono">©UNTITLED OFFICE | 2025</Reveal>
 </section>
 
 <style>

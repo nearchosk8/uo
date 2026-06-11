@@ -1,26 +1,27 @@
 ---
 import AboutCarousel from "./AboutCarousel.astro";
+import Reveal from "./Reveal.astro";
 ---
 <section class="about edge">
   <div class="about-text">
-    <h1 class="h-display">
-      <span class="u-link">About</span> <span class="u-link">us</span>
+    <Reveal as="h1" class="h-display">
+      <span class="u-line">About us</span>
       <span class="idx">(1)</span>
-    </h1>
+    </Reveal>
 
-    <p class="mono label">About Us</p>
-    <p class="lede">
+    <Reveal as="p" class="mono label">About Us</Reveal>
+    <Reveal as="p" class="lede">
       Founded in 2020 in Athens, Greece.<br />
       Our ambition is not to use a title for our office<br />
       because our work speaks itself and no descriptions needed.
-    </p>
-    <p class="lede">
+    </Reveal>
+    <Reveal as="p" class="lede">
       <span class="u-link">The language is visual</span> &amp;
       <span class="u-link">you have the vision and we add the title.</span>
-    </p>
-    <p class="lede">
+    </Reveal>
+    <Reveal as="p" class="lede">
       <a class="u-link" href="#" data-placeholder>Want to see what we mean? Explore recent works</a>
-    </p>
+    </Reveal>
   </div>
 
   <div class="about-img">

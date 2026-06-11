@@ -67,7 +67,13 @@ import Logo from "./Logo.astro";
     border-radius: 50%;
     background: var(--fg);
     display: block;
+    transition: transform 200ms ease;
   }
+  /* on hover/focus the outer two dots spread apart; the middle stays put */
+  .dots:hover span:first-child,
+  .dots:focus-visible span:first-child { transform: translateX(-4px); }
+  .dots:hover span:last-child,
+  .dots:focus-visible span:last-child { transform: translateX(4px); }
   .controls {
     justify-self: end;
     display: flex;
@@ -121,14 +127,14 @@ import Logo from "./Logo.astro";
     }));
   sync();
 
-  // Live local time in Athens (Europe/Athens), 24h, updates each minute.
+  // Live local time in Athens (Europe/Athens), 24h, updates every second.
   const clock = document.getElementById("clock");
   function tick() {
     const t = new Intl.DateTimeFormat("en-GB", {
-      hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Europe/Athens",
+      hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false, timeZone: "Europe/Athens",
     }).format(new Date());
     if (clock) clock.textContent = t;
   }
   tick();
-  setInterval(tick, 1000 * 20);
+  setInterval(tick, 1000);
 </script>
