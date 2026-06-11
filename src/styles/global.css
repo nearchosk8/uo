@@ -216,6 +216,25 @@ main {
   z-index: 0;
 }
 
+/* ============================================================
+   SECTION REVEAL — sticky "folder" for Philosophy.
+   About is pinned (sticky) while the Philosophy panel rises up over it, its
+   rounded top corners leading the sweep — same folder feel as the footer.
+   .reveal-stack fences About's sticky range to the About+Philosophy pair so it
+   releases cleanly into YearsBanner. Pure CSS, no JS.
+   ============================================================ */
+.reveal-stack { position: relative; }
+.reveal-stack > .about {
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  background: var(--bg);
+}
+.reveal-stack > .philosophy {
+  position: relative;
+  z-index: 1;
+}
+
 /* page gutter + cap: fluid below --maxw, centered at the designed width above it */
 .edge { max-width: var(--maxw); margin-inline: auto; padding-inline: var(--edge); }
 
