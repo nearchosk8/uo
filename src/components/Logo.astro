@@ -42,8 +42,6 @@ const { class: className, animateU = false } = Astro.props;
 </style>
 
 <script>
-  // Footer-only "U" build: play the left -> bottom -> right sequence once when the
-  // footer logo first scrolls into view. Only the footer logo has .logo--animate-u.
   (function () {
     const logo = document.querySelector(".logo--animate-u");
     if (!logo) return;
@@ -52,17 +50,25 @@ const { class: className, animateU = false } = Astro.props;
       logo.classList.add("playing"); // show the full U immediately
       return;
     }
+    // The footer is position:sticky, so it's in the viewport from page load.
+    // Watch a tiny sentinel at the footer's NATURAL position so the build fires
+    // only when the footer is actually being revealed at the bottom of the page.
+    const foot = logo.closest(".foot") || logo;
+    const cue = document.createElement("span");
+    cue.setAttribute("aria-hidden", "true");
+    cue.style.cssText = "display:block;width:1px;height:1px;";
+    foot.parentNode.insertBefore(cue, foot);
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
           if (e.isIntersecting) {
-            e.target.classList.add("playing");
-            io.unobserve(e.target); // play once
+            logo.classList.add("playing");
+            io.disconnect(); // play once
           }
         });
       },
-      { threshold: 0.2 }
+      { rootMargin: "0px 0px -120px 0px", threshold: 0 }
     );
-    io.observe(logo);
+    io.observe(cue);
   })();
 </script>
