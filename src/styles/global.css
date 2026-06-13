@@ -43,7 +43,6 @@
   --ff-pixel: "Neue Pixel Grotesk", var(--ff-sans);
 
   --edge: clamp(1.25rem, 2.6vw, 3rem); /* page side gutter */
-  --maxw: 1900px;                       /* ≈ the comp artboard width */
 }
 
 /* light grayscale (default) */
@@ -235,8 +234,15 @@ main {
   z-index: 1;
 }
 
-/* page gutter + cap: fluid below --maxw, centered at the designed width above it */
-.edge { max-width: var(--maxw); margin-inline: auto; padding-inline: var(--edge); }
+/* Proportional scaling above the 1900px artboard. Below 1900px the root
+   font-size stays at the 16px default; at/above 1900px, 1rem becomes
+   (100vw / 1900) * 16px, so the whole rem-based layout scales with width. */
+@media (min-width: 1900px) {
+  :root { font-size: calc(100vw / 118.75); } /* 118.75 = 1900 / 16 */
+}
+
+/* page side gutter (no width cap — above 1900px the design scales proportionally) */
+.edge { padding-inline: var(--edge); }
 
 /* contrasting rounded panel (philosophy + footer) */
 .panel {
