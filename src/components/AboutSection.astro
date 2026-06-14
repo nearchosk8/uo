@@ -25,11 +25,11 @@ const aboutSlides = [
         because our work speaks itself and no descriptions needed.
       </Reveal>
       <Reveal as="p" class="lede">
-        <span class="u-link">The language is visual</span> &amp;
-        <span class="u-link">you have the vision and we add the title.</span>
+        <span>The language is visual</span> &amp;
+        <span>you have the vision and we add the title.</span>
       </Reveal>
       <Reveal as="p" class="lede">
-        <a class="u-link" href="#" data-placeholder>Want to see what we mean? Explore recent works</a>
+        <a class="u-line lede-link" href="https://www.behance.net/alexandrosdimopoulos" target="_blank" rel="noopener noreferrer">Want to see what we mean? Explore recent works</a>
       </Reveal>
     </div>
   </div>
@@ -76,6 +76,10 @@ const aboutSlides = [
     /* break only at the authored <br>s — never auto-wrap into different rows */
     white-space: nowrap;
   }
+  /* the Behance lede link turns muted grey on hover/focus (underline inherits color) */
+  .lede-link { transition: color 280ms ease; }
+  .lede-link:hover,
+  .lede-link:focus-visible { color: var(--muted); }
   .about-img { justify-self: end; width: 100%; }
 
   @media (max-width: 820px) {

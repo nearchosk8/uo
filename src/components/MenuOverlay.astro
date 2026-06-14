@@ -24,7 +24,7 @@ const nav = ["Home", "About", "Gallery", "Begin your journey", "Contact", "Selec
     </nav>
 
     <div class="menu-foot mono">
-      <span>©2025 | ALL RIGHTS RESERVED</span>
+      <span>©2026 | ALL RIGHTS RESERVED</span>
       <span class="socials">
         <a class="social" href="https://www.linkedin.com/in/alexandros-dimopoulos-58b5b9194/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><SocialIcon name="linkedin" /></a>
         <a class="social" href="https://www.instagram.com/untitled_office/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><SocialIcon name="instagram" /></a>
@@ -91,13 +91,14 @@ const nav = ["Home", "About", "Gallery", "Begin your journey", "Contact", "Selec
   /* social logos inherit currentColor (the menu's --fg) and recolor on hover/focus */
   .social {
     display: inline-flex; align-items: center;
-    height: 20px; color: var(--fg);
+    height: 2rem; color: var(--fg);
     transition: color 180ms ease;
   }
   .social:hover, .social:focus-visible { color: var(--muted); }
 
   @media (max-width: 720px) {
     .menu-foot { flex-direction: column; align-items: flex-start; gap: 0.6rem; }
+    .social { height: 1.5rem; }
   }
 </style>
 
