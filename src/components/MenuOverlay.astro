@@ -46,15 +46,14 @@ const nav = ["Home", "About", "Gallery", "Begin your journey", "Contact", "Selec
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.18);
     transform: translateY(-100%);
     pointer-events: none;
-    /* closing: slightly quicker ease-in */
-    transition: transform 0.45s cubic-bezier(0.4, 0, 1, 1);
+    transition: none; /* enabled after first paint via html.menu-ready (no load-time slide) */
   }
   .menu[data-open="true"] {
     transform: translateY(0);
     pointer-events: auto;
-    /* opening: ease-out */
-    transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   }
+  html.menu-ready .menu { transition: transform 0.45s cubic-bezier(0.4, 0, 1, 1); }
+  html.menu-ready .menu[data-open="true"] { transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
 
   .menu-inner { padding-block: clamp(1.1rem, 1.8vw, 1.6rem) clamp(1.5rem, 3vw, 2.5rem); }
   .menu-top {
@@ -114,6 +113,13 @@ const nav = ["Home", "About", "Gallery", "Begin your journey", "Contact", "Selec
   }
   openBtn?.addEventListener("click", () => setOpen(true));
   closeBtn?.addEventListener("click", () => setOpen(false));
+
+  // Enable the open/close transition only after the hidden state has painted (two
+  // frames), so the menu can't animate into its hidden position on first load. This is
+  // image-independent (unlike window.load) so the menu still animates for early opens.
+  requestAnimationFrame(() =>
+    requestAnimationFrame(() => document.documentElement.classList.add("menu-ready"))
+  );
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") setOpen(false); });
 
   // Mobile-only: also dismiss the menu by tapping outside the drawer or by scrolling
