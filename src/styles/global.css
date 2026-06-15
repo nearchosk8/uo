@@ -41,6 +41,7 @@
   --ff-sans: "neue-haas-grotesk-display", "Helvetica Neue", Arial, sans-serif;
   --ff-mono: "Roboto Mono", ui-monospace, monospace;
   --ff-pixel: "Neue Pixel Grotesk", var(--ff-sans);
+  --ff-pixelscript: "pf-pixelscript", monospace;
 
   --edge: clamp(1.25rem, 2.6vw, 3rem); /* page side gutter */
 }

@@ -3,9 +3,18 @@
 // edge. Motion is a drawer slide — it translates straight DOWN from above the
 // viewport to cover the page (600ms ease-out) and retracts straight UP to
 // close (450ms ease-in). Clean opaque slide, no fade.
-// Nav targets are placeholders (#) until the other pages are designed.
+// Home goes to the homepage; the not-yet-built pages point at the /in-progress
+// placeholder ("OOPS 404").
 import SocialIcon from "./SocialIcon.astro";
-const nav = ["Home", "About", "Gallery", "Begin your journey", "Contact", "Selected Clients", "Shop"];
+const nav = [
+  { label: "Home", href: "/" },
+  { label: "About", href: "/in-progress" },
+  { label: "Gallery", href: "/in-progress" },
+  { label: "Begin your journey", href: "/in-progress" },
+  { label: "Contact", href: "/in-progress" },
+  { label: "Selected Clients", href: "/in-progress" },
+  { label: "Shop", href: "/in-progress" },
+];
 ---
 
 <div id="menu" class="menu" aria-hidden="true">
@@ -17,8 +26,8 @@ const nav = ["Home", "About", "Gallery", "Begin your journey", "Contact", "Selec
 
     <nav class="menu-nav" aria-label="Primary">
       {nav.map((item, i) => (
-        <a class="u-link" href="#" data-placeholder style={`--reveal-delay:${(nav.length - 1 - i) * 75}ms`}>
-          <span class="reveal">{item}</span>
+        <a class="u-link" href={item.href} style={`--reveal-delay:${(nav.length - 1 - i) * 75}ms`}>
+          <span class="reveal">{item.label}</span>
         </a>
       ))}
     </nav>

@@ -1,0 +1,87 @@
+---
+import Base from "../layouts/Base.astro";
+import Header from "../components/Header.astro";
+import MenuOverlay from "../components/MenuOverlay.astro";
+const items = Array.from({ length: 10 }); // rendered twice in the track (seamless loop)
+---
+<Base title="Page not found — Untitled Office">
+  <Header />
+  <MenuOverlay />
+  <main class="oops">
+    <div class="oops-marquee" aria-hidden="true">
+      <div class="oops-track">
+        {items.map(() => (
+          <span class="ip-word">
+            <span class="ip-s">I</span><span class="ip-p">N</span><span class="ip-gap" aria-hidden="true"></span><span class="ip-s">P</span><span class="ip-p">R</span><span class="ip-s">OGRESS</span>
+          </span>
+        ))}
+        {items.map(() => (
+          <span class="ip-word">
+            <span class="ip-s">I</span><span class="ip-p">N</span><span class="ip-gap" aria-hidden="true"></span><span class="ip-s">P</span><span class="ip-p">R</span><span class="ip-s">OGRESS</span>
+          </span>
+        ))}
+      </div>
+    </div>
+    <p class="visually-hidden">This page is still in progress.</p>
+    <div class="oops-cap edge mono"><span>PAGE NOT FOUND</span><span>.jpeg</span></div>
+  </main>
+</Base>
+
+<style>
+  .oops {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    place-items: center;
+    background: var(--bg);
+    color: var(--fg);
+    overflow: hidden;
+  }
+  .oops-marquee { width: 100%; overflow: hidden; }
+  /* two identical halves; animating -50% -> 0 moves content rightward (L→R) and
+     loops seamlessly because the two halves make -50% and 0 look identical */
+  .oops-track {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    will-change: transform;
+    animation: oops-scroll 19s linear infinite;
+  }
+  .ip-word {
+    font-size: clamp(4rem, 18vw, 16rem);
+    line-height: 1;
+    white-space: nowrap;
+    padding-right: 0.5em;
+  }
+  .ip-s { font-family: var(--ff-display); font-weight: 500; letter-spacing: -0.02em; } /* Roman 55 */
+  .ip-p { font-family: var(--ff-pixelscript); font-weight: 400; }                       /* PF Pixelscript regular */
+  .ip-gap { display: inline-block; width: 0.45em; }
+  @keyframes oops-scroll {
+    from { transform: translateX(-50%); }
+    to { transform: translateX(0); }
+  }
+  .oops-cap {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: clamp(1rem, 2.5vw, 2rem);
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+  }
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .oops-track { animation: none; transform: translateX(-25%); }
+  }
+</style>
