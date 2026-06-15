@@ -100,3 +100,16 @@ const rightSlides = [
     .copy { white-space: normal; font-size: clamp(1rem, 3.6vw, 1.2rem); }
   }
 </style>
+
+<script>
+  // Re-triggering drag-in: toggle .in-view as each carousel enters/leaves the viewport,
+  // so the opposite-direction slide replays every time the user scrolls past them.
+  const dragImgs = document.querySelectorAll(".ph-images > *");
+  if (dragImgs.length && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => e.target.classList.toggle("in-view", e.isIntersecting)),
+      { threshold: 0.25 }
+    );
+    dragImgs.forEach((el) => io.observe(el));
+  }
+</script>
