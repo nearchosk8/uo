@@ -89,5 +89,10 @@ const aboutSlides = [
     .lede { white-space: normal; font-size: clamp(1rem, 3.4vw, 1.25rem); }
     /* revert the desktop centering: normal stacked flow */
     .about-lede { position: static; transform: none; }
+    /* re-assert a Philosophy-matching gap with a selector specific enough to beat the
+       reveal-mask rule, and hide the redundant "About Us" eyebrow that the collapse was
+       hiding */
+    .about-text .h-display { margin-bottom: clamp(1.2rem, 2.5vw, 2rem); }
+    .about-text .label { display: none; }
   }
 </style>

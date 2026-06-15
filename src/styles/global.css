@@ -161,6 +161,15 @@ html.js-reveal .reveal-on-scroll {
   padding-bottom: 0.2em;
   margin-bottom: -0.2em;
 }
+/* display headings: tight line-height + negative letter-spacing let the "y"'s
+   top-right ink poke past the mask — give a little top/right room (negative
+   margins keep layout + baseline unchanged) */
+html.js-reveal .h-display.reveal-on-scroll {
+  padding-top: 0.15em;
+  margin-top: -0.15em;
+  padding-right: 0.12em;
+  margin-right: -0.12em;
+}
 html.js-reveal .reveal-inner {
   display: block;
   transform: translateY(110%);
