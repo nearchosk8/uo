@@ -272,15 +272,17 @@ html.has-custom-cursor * { cursor: none; }
    sides each time they enter the viewport (re-triggers via the observer below that
    toggles .in-view). overflow:hidden contains the slide so it can't cause a scrollbar;
    gated under html.js-reveal so with no JS the images just sit in place. */
-.ph-images { overflow: hidden; }
-.ph-images > * {
-  transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: transform;
+@media (min-width: 721px) {
+  .ph-images { overflow: hidden; }
+  .ph-images > * {
+    transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform;
+  }
+  html.js-reveal .ph-images > :nth-child(1) { transform: translateX(-9%); }
+  html.js-reveal .ph-images > :nth-child(2) { transform: translateX(9%); }
+  html.js-reveal .ph-images > .in-view { transform: translateX(0); }
 }
-html.js-reveal .ph-images > :nth-child(1) { transform: translateX(-9%); }
-html.js-reveal .ph-images > :nth-child(2) { transform: translateX(9%); }
-html.js-reveal .ph-images > .in-view { transform: translateX(0); }
-@media (prefers-reduced-motion: reduce) {
+@media (min-width: 721px) and (prefers-reduced-motion: reduce) {
   .ph-images > * { transition: none; }
   html.js-reveal .ph-images > :nth-child(1),
   html.js-reveal .ph-images > :nth-child(2) { transform: none; }
