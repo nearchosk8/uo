@@ -131,31 +131,38 @@ const nav = [
   );
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") setOpen(false); });
 
-  // Mobile-only: also dismiss the menu by tapping outside the drawer or by scrolling
-  // the page. (Desktop keeps the Close Tab / Escape behaviour only.)
-  const isMobile = () => window.matchMedia("(max-width: 720px)").matches;
+  // Dismiss the menu by clicking/tapping outside the drawer, or by scrolling —
+  // on every viewport (previously mobile-only). Body scroll is locked while the
+  // menu is open, so a scroll gesture is a dismiss intent, not a real page scroll.
   const isOpen = () => menu?.getAttribute("data-open") === "true";
   const inMenuOrToggle = (t) =>
     (menu && menu.contains(t)) || (openBtn && openBtn.contains(t));
-  // tap/click outside the drawer closes it (capture phase so the tap is swallowed,
+  // click/tap outside the drawer closes it (capture phase so the click is swallowed,
   // not passed through to the page underneath)
   document.addEventListener(
     "click",
     (e) => {
-      if (!isMobile() || !isOpen() || inMenuOrToggle(e.target)) return;
+      if (!isOpen() || inMenuOrToggle(e.target)) return;
       e.preventDefault();
       e.stopPropagation();
       setOpen(false);
     },
     true
   );
-  // a scroll gesture on the page (outside the drawer) closes it
+  // touch-scroll (mobile) outside the drawer closes it
   window.addEventListener(
     "touchmove",
     (e) => {
-      if (!isMobile() || !isOpen() || (menu && menu.contains(e.target))) return;
+      if (!isOpen() || (menu && menu.contains(e.target))) return;
       setOpen(false);
     },
+    { passive: true }
+  );
+  // wheel / trackpad scroll (desktop) closes it — the menu has no internal scroll,
+  // so any scroll gesture while open is treated as a dismiss
+  window.addEventListener(
+    "wheel",
+    () => { if (isOpen()) setOpen(false); },
     { passive: true }
   );
 
