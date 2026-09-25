@@ -3,7 +3,8 @@
 // When `image` (an Astro ImageMetadata) is supplied, renders an optimized
 // <Image> filling the slot; otherwise falls back to the grey placeholder.
 import { Image } from "astro:assets";
-const { label = "office", index = "1/3", ext = ".jpeg", ratio = "1 / 1", image, alt = "" } = Astro.props;
+// `caption={false}` drops the caption row (e.g. uncaptioned feature images).
+const { label = "office", index = "1/3", ext = ".jpeg", ratio = "1 / 1", image, alt = "", caption = true } = Astro.props;
 ---
 <figure class="fig">
   <div class="ph" style={`aspect-ratio:${ratio}`}>
@@ -11,11 +12,13 @@ const { label = "office", index = "1/3", ext = ".jpeg", ratio = "1 / 1", image, 
       ? <Image src={image} alt={alt} class="img" />
       : <span class="mono">PLACEHOLDER IMAGE</span>}
   </div>
-  <figcaption class="reveal-on-scroll">
-    <span class="reveal-inner">
-      <span class="cap mono"><span>{label}</span><span>({index})</span><span>{ext}</span></span>
-    </span>
-  </figcaption>
+  {caption && (
+    <figcaption class="reveal-on-scroll">
+      <span class="reveal-inner">
+        <span class="cap mono"><span>{label}</span><span>({index})</span><span>{ext}</span></span>
+      </span>
+    </figcaption>
+  )}
 </figure>
 
 <style>
