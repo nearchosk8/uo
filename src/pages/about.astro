@@ -16,7 +16,11 @@ const officeSlides = [
   { img: office2, alt: "Untitled Office — inside the studio" },
   { img: office3, alt: "Untitled Office — studio work in progress" },
 ];
-// Athens has one photo so far (single Figure); the wide desk shot is still a placeholder.
+// Athens has one photo so far — add the other two here when they arrive.
+const athensSlides = [
+  { img: athens1, alt: "Untitled Office — a figure in a patterned orange shirt seen through ribbed glass" },
+];
+// The wide desk shot has no supplied photo yet → Figure placeholder.
 ---
 <Base title="About — Untitled Office">
   <MenuOverlay />
@@ -50,7 +54,7 @@ const officeSlides = [
       <div class="ab-band">
         <div class="ab-panel" data-invert aria-hidden="true"></div>
         <div class="ab-images edge" data-invert>
-          <Figure label="athens" index="1/3" ext=".jpeg" ratio="7 / 10" image={athens1} alt="Untitled Office — a figure in a patterned orange shirt seen through ribbed glass" />
+          <Carousel slides={athensSlides} leftLabel="athens" ext=".jpeg" ratio="7 / 10" />
           <Carousel slides={officeSlides} leftLabel="office" ext=".jpeg" ratio="1 / 1" />
         </div>
       </div>
@@ -131,11 +135,8 @@ const officeSlides = [
   .ab-images :global(.controls),
   .ab-images :global(.counter),
   .ab-images :global(.cap-label) { color: var(--on-panel); }
-  /* placeholder straddles page bg + panel → make it opaque so it reads on both */
-  .ab-images :global(.ph),
+  /* placeholder overlaps page bg + panel → make it opaque so it reads on both */
   .ab-wide :global(.ph) { background: color-mix(in srgb, var(--fg) 8%, var(--bg)); }
-  /* photos in the row are borderless, like the OFFICE carousel beside them */
-  .ab-images :global(.ph) { border: 0; }
 
   /* wide shot: offset right like the comp, overlapping the panel's bottom edge */
   .ab-wide {
