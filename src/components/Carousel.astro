@@ -4,7 +4,9 @@
 // row (leftLabel · (i/n) · ext). The bar's animationend advances + restarts the
 // fill, keeping them in lockstep. Pauses on hover; no auto-advance under reduced
 // motion. MULTI-INSTANCE safe — the script loops every [data-carousel] root.
-// Props: slides [{img, alt}], leftLabel, ext, ratio (e.g. "1 / 1").
+// Props: slides [{img, alt, position?}], leftLabel, ext, ratio (e.g. "1 / 1").
+// `position` is an optional per-slide object-position focal point (e.g.
+// "100% 50%"); omitted → the default centred crop.
 import { Image } from "astro:assets";
 const { slides = [], leftLabel = "", ext = "", ratio = "1 / 1" } = Astro.props;
 const total = slides.length;
@@ -13,7 +15,7 @@ const total = slides.length;
 <div class="carousel" data-carousel style={`--stage-ratio:${ratio}`}>
   <div class="stage">
     {slides.map((s, i) => (
-      <Image src={s.img} alt={s.alt} class="slide" data-slide data-active={String(i === 0)} />
+      <Image src={s.img} alt={s.alt} class="slide" data-slide data-active={String(i === 0)} style={s.position ? `object-position:${s.position}` : undefined} />
     ))}
   </div>
 

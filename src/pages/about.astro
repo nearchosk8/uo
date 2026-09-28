@@ -6,21 +6,38 @@ import Footer from "../components/Footer.astro";
 import Reveal from "../components/Reveal.astro";
 import Figure from "../components/Figure.astro";
 import Carousel from "../components/Carousel.astro";
-import office1 from "../assets/office-1.jpeg";
-import office2 from "../assets/office-2.jpeg";
-import office3 from "../assets/office-3.jpeg";
+import officeAbout1 from "../assets/office-about-1.jpeg";
+import officeAbout2 from "../assets/office-about-2.jpeg";
+import officeAbout3 from "../assets/office-about-3.jpeg";
+import officeAbout4 from "../assets/office-about-4.jpeg";
+import officeAbout5 from "../assets/office-about-5.jpeg";
+import officeAbout6 from "../assets/office-about-6.jpeg";
+import officeAbout7 from "../assets/office-about-7.jpeg";
+import officeAbout8 from "../assets/office-about-8.jpeg";
 import athens1 from "../assets/athens-1.jpeg";
+import athens2 from "../assets/athens-2.jpeg";
+import athens3 from "../assets/athens-3.jpeg";
+import athens4 from "../assets/athens-4.jpeg";
+import desk1 from "../assets/desk-1.jpeg";
 
+// All 8 are ~3:2 landscape in a square frame: the crop shows the middle 2/3 of
+// the width, and `position` (x%) slides that window left (0%) → right (100%).
 const officeSlides = [
-  { img: office1, alt: "Untitled Office — reviewing printed work in the studio" },
-  { img: office2, alt: "Untitled Office — inside the studio" },
-  { img: office3, alt: "Untitled Office — studio work in progress" },
+  { img: officeAbout1, alt: "Over-the-shoulder view of a silhouetted designer looking at Greek typesetting on a large monitor", position: "100% 50%" }, // keep the head at right
+  { img: officeAbout2, alt: "Studio corner with a black drawer unit, a large monstera, a framed art poster and an orange wire lounge chair with bags hanging on it", position: "85% 50%" }, // keep chair + bag
+  { img: officeAbout3, alt: "Two monitors back to back on a shared desk in front of a sunlit roller blind" },
+  { img: officeAbout4, alt: "A monstera beside stacked cardboard boxes and an orange wire chair, shot at a tilted angle" },
+  { img: officeAbout5, alt: "Dark studio interior on film, with a bright window and a green light leak along one edge" },
+  { img: officeAbout6, alt: "Double-exposed film photo of the studio: monstera leaves, a window blind and large lettering on the wall" },
+  { img: officeAbout7, alt: "Hands holding open a magazine spread about a corporate identity project, with monstera leaves behind" },
+  { img: officeAbout8, alt: "An open magazine spread about a corporate identity project, held up in front of a ribbed wall" },
 ];
-// Athens has one photo so far — add the other two here when they arrive.
 const athensSlides = [
   { img: athens1, alt: "Untitled Office — a figure in a patterned orange shirt seen through ribbed glass" },
+  { img: athens2, alt: "An outstretched arm holding up a paper rubbing of a manhole cover above a tiled pavement" },
+  { img: athens3, alt: "A corner of the studio: a Carrera 1969 poster above a narrow desk, a wooden stool and a plant on a side table" },
+  { img: athens4, alt: "Black-and-white arcade with a marble column, a circular mosaic floor and a motion-blurred passer-by in front of a poster" },
 ];
-// The wide desk shot has no supplied photo yet → Figure placeholder.
 ---
 <Base title="About — Untitled Office">
   <MenuOverlay />
@@ -59,7 +76,7 @@ const athensSlides = [
         </div>
       </div>
       <div class="ab-wide">
-        <Figure ratio="5 / 3" caption={false} />
+        <Figure ratio="5 / 3" caption={false} image={desk1} alt="Hands at a white keyboard and mouse on a studio desk, below a monitor showing a page of smiley-face illustrations and Greek text" />
       </div>
     </section>
 
@@ -135,8 +152,8 @@ const athensSlides = [
   .ab-images :global(.controls),
   .ab-images :global(.counter),
   .ab-images :global(.cap-label) { color: var(--on-panel); }
-  /* placeholder overlaps page bg + panel → make it opaque so it reads on both */
-  .ab-wide :global(.ph) { background: color-mix(in srgb, var(--fg) 8%, var(--bg)); }
+  /* borderless, like the carousel photos above */
+  .ab-wide :global(.ph) { border: 0; }
 
   /* wide shot: offset right like the comp, overlapping the panel's bottom edge */
   .ab-wide {
