@@ -38,6 +38,15 @@ const total = slides.length;
     width: 100%;
     aspect-ratio: var(--stage-ratio, 1 / 1);
     overflow: hidden;
+    /* own stacking context so the rounded clip also holds while the slides'
+       opacity crossfade / the Philosophy slide-in are GPU-composited (WebKit) */
+    isolation: isolate;
+    transition: border-radius 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  /* hover: the photo's corners ease round (panel radius); mouse devices only so
+     it can't stick on touch. Reduced motion → global rule drops the transition. */
+  @media (hover: hover) {
+    .stage:hover { border-radius: clamp(18px, 1.8vw, 30px); }
   }
   .slide {
     position: absolute;
