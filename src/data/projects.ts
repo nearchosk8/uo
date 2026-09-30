@@ -56,6 +56,17 @@ import sk08 from "../assets/stratos-kanakis-08.jpeg";
 import sk09 from "../assets/stratos-kanakis-09.jpeg";
 import sk10 from "../assets/stratos-kanakis-10.jpeg";
 import sk11 from "../assets/stratos-kanakis-11.jpeg";
+// Between Spaces (real photos, in the supplied order)
+import bs01 from "../assets/between-spaces-01.jpeg";
+import bs02 from "../assets/between-spaces-02.jpeg";
+import bs03 from "../assets/between-spaces-03.jpeg";
+import bs04 from "../assets/between-spaces-04.jpeg";
+import bs05 from "../assets/between-spaces-05.jpeg";
+import bs06 from "../assets/between-spaces-06.jpeg";
+import bs07 from "../assets/between-spaces-07.jpeg";
+import bs08 from "../assets/between-spaces-08.jpeg";
+import bs09 from "../assets/between-spaces-09.jpeg";
+import bs10 from "../assets/between-spaces-10.jpeg";
 
 export const CATEGORIES = ["Branding", "Digital", "Poster", "Book"] as const;
 export type Category = (typeof CATEGORIES)[number];
@@ -270,9 +281,39 @@ export const projects: Project[] = [
       { label: "Spotify", href: "https://open.spotify.com/episode/1ZuIKGvSouGsmyWhja3Ogt?si=a8a0c4cc6d7d45eb" },
       { label: "Youtube", href: "https://youtu.be/Dk4p4guKeM4" },
     ],
-    hero: { slides: [ph(office3, "Placeholder — project hero image 1"), ph(philosophy1, "Placeholder — project hero image 2"), ph(untitled2, "Placeholder — project hero image 3")], label: "between spaces", ext: ".jpeg" },
-    gallery: { images: [ph(phUntitled2, "Placeholder — gallery image 1"), ph(office2, "Placeholder — gallery image 2")], label: "spreads", ext: ".jpeg" },
-    preview: office3,
+    hero: {
+      slides: [
+        { img: bs01, alt: "A person holding up the Be A Part magazine in front of their face against a graffiti-covered wall" },
+        { img: bs02, alt: "The Be A Part magazine lying on a sunlit pavement kerb" },
+        { img: bs03, alt: "Black issue cover with a white cut-out R logo over chain-link fence, reading Issue 1 and Between Spaces" },
+      ],
+      label: "issue 1",
+      ext: ".jpeg",
+    },
+    gallery: {
+      carousels: [
+        {
+          slides: [
+            { img: bs04, alt: "The magazine tucked under the rear wiper of a parked car" },
+            { img: bs05, alt: "A magazine page caught in a metal security grille" },
+            { img: bs06, alt: "The magazine on a red plastic crate beside a newspaper kiosk" },
+            { img: bs07, alt: "Hands holding the magazine open by a sunlit window" },
+          ],
+          label: "street",
+          ext: ".jpeg",
+        },
+        {
+          slides: [
+            { img: bs08, alt: "Someone sitting on the kerb reading an illustrated magazine spread" },
+            { img: bs09, alt: "A reader sitting on the pavement with the magazine open, parked cars behind" },
+            { img: bs10, alt: "Close-up of hands holding the magazine open at an illustrated article" },
+          ],
+          label: "reading",
+          ext: ".jpeg",
+        },
+      ],
+    },
+    preview: bs02,
   },
   {
     slug: "stratos-kanakis-woodcrafts",
