@@ -44,6 +44,18 @@ import welle11 from "../assets/welle-11.jpeg";
 import welle12 from "../assets/welle-12.jpeg";
 import welle13 from "../assets/welle-13.jpeg";
 import welle14 from "../assets/welle-14.jpeg";
+// Stratos Kanakis Woodcrafts (real photos, in the supplied order)
+import sk01 from "../assets/stratos-kanakis-01.jpeg";
+import sk02 from "../assets/stratos-kanakis-02.jpeg";
+import sk03 from "../assets/stratos-kanakis-03.jpeg";
+import sk04 from "../assets/stratos-kanakis-04.jpeg";
+import sk05 from "../assets/stratos-kanakis-05.jpeg";
+import sk06 from "../assets/stratos-kanakis-06.jpeg";
+import sk07 from "../assets/stratos-kanakis-07.jpeg";
+import sk08 from "../assets/stratos-kanakis-08.jpeg";
+import sk09 from "../assets/stratos-kanakis-09.jpeg";
+import sk10 from "../assets/stratos-kanakis-10.jpeg";
+import sk11 from "../assets/stratos-kanakis-11.jpeg";
 
 export const CATEGORIES = ["Branding", "Digital", "Poster", "Book"] as const;
 export type Category = (typeof CATEGORIES)[number];
@@ -281,9 +293,41 @@ export const projects: Project[] = [
       "Using Gmund Naturals (Orange & Sable) and Fedrigoni Materica Acqua, the identity remains honest, handcrafted, and deeply human.",
       "The project was awarded an EBGE 2026 Award in the Corporate Identity category, recognizing the identity’s approach to contemporary craft, communication, and visual expression.",
     ],
-    hero: { slides: [ph(untitled3, "Placeholder — project hero image 1"), ph(office1, "Placeholder — project hero image 2"), ph(phUntitled3, "Placeholder — project hero image 3")], label: "stratos kanakis", ext: ".jpeg" },
-    gallery: { images: [ph(philosophy2, "Placeholder — gallery image 1"), ph(office3, "Placeholder — gallery image 2")], label: "cards", ext: ".jpeg" },
-    preview: untitled3,
+    hero: {
+      slides: [
+        { img: sk01, alt: "An embossed metal plate with Greek lettering set into a concrete block, in hard sunlight" },
+        { img: sk02, alt: "The embossed metal plate leaning against a concrete block, casting a long shadow" },
+        { img: sk03, alt: "A grey poster reading ΣΤΗΝ ΑΘΗΝΑ draped over a curved wooden frame in a cluttered carpentry workshop" },
+      ],
+      label: "identity",
+      ext: ".jpeg",
+    },
+    // 4:5 panel carousels. #4, #7 and #10 are landscape (keep ~53% of the width)
+    gallery: {
+      carousels: [
+        {
+          slides: [
+            { img: sk04, alt: "A cream card and an orange business card tucked into a hollow concrete block, with brass screws", position: "55% 50%" },
+            { img: sk05, alt: "Two orange business cards with black Greek lettering on a concrete block" },
+            { img: sk06, alt: "A printed poster curling over the table of a workshop saw" },
+            { img: sk07, alt: "A ΣΤΗΝ ΑΘΗΝΑ poster lying across a saw bench beside an orange handle", position: "15% 50%" },
+          ],
+          label: "print",
+          ext: ".jpeg",
+        },
+        {
+          slides: [
+            { img: sk08, alt: "An orange business card on the corner of a concrete block, brass screws scattered beside it" },
+            { img: sk09, alt: "A ΣΤΗΝ ΑΘΗΝΑ poster lying on a circular saw table dusted with sawdust" },
+            { img: sk10, alt: "Close-up of the ΣΤΗΝ ΑΘΗΝΑ poster in sunlight, with two brass screws resting on it", position: "30% 50%" },
+            { img: sk11, alt: "A person sitting on worn concrete steps below a ΣΤΗΝ ΑΘΗΝΑ poster on the wall" },
+          ],
+          label: "posters",
+          ext: ".jpeg",
+        },
+      ],
+    },
+    preview: sk01,
   },
   {
     slug: "neue-poster",
