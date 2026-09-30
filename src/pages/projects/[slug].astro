@@ -35,14 +35,28 @@ const plainName = project.name.replace(/[\[\]]/g, "");
       <section class="pd-hero stack-pin edge">
         <div class="pd-text">
           <div class="pd-lede">
-            <Reveal as="p" class="pd-title">{plainName}<span class="pd-year">{project.year}</span></Reveal>
+            <Reveal as="p" class="pd-title">{project.heroTitle ?? plainName}<span class="pd-year">{project.year}</span></Reveal>
+            {project.heroSubtitle && <Reveal as="p" class="pd-subtitle">{project.heroSubtitle}</Reveal>}
             <Reveal as="p" class="meta">— {project.type}<span class="meta-gap" aria-hidden="true"></span>{project.place}</Reveal>
+            {project.award && <Reveal as="p" class="award">{project.award}</Reveal>}
             {project.description.map((d) => (
               <Reveal as="p" class="copy">
                 {d.split("\n").map((line, i) => <>{i > 0 && <br />}{line}</>)}
               </Reveal>
             ))}
-            {project.details && <Reveal as="p" class="details mono">{project.details}</Reveal>}
+            {(project.details || project.links) && (
+              <Reveal as="p" class="details mono">
+                {project.details}
+                {project.links && (
+                  <>
+                    {project.details && <br />}
+                    {project.links.map((l, i) => (
+                      <>{i > 0 && " | "}<a class="u-link" href={l.href} target="_blank" rel="noopener">{l.label}</a></>
+                    ))}
+                  </>
+                )}
+              </Reveal>
+            )}
             <Reveal as="div" class="orbs-row">
               <ArrowOrbs big="down" small="down-right" href="#gallery" label="Scroll to project images" smallHref="#gallery" />
             </Reveal>
@@ -118,6 +132,14 @@ const plainName = project.name.replace(/[\[\]]/g, "");
      reveal padding the visible gap comes out at the full value. */
   .pd-title + .meta { margin-top: calc(0.85rem * 1.4); }
   .meta + .copy { margin-top: 1.4em; }
+  /* optional subtitle: tight under the title (like a second title line),
+     then the same one-line gap before the meta line */
+  .pd-subtitle { font-size: 0.85rem; line-height: 1.4; margin: 0; color: var(--fg); }
+  .pd-subtitle + .meta { margin-top: calc(0.85rem * 1.4); }
+  /* optional award: directly under the meta line in the same small style,
+     then the usual one-line gap before the first paragraph */
+  .award { font-size: 0.85rem; margin: 0; color: var(--muted); }
+  .award + .copy { margin-top: 1.4em; }
   .meta-gap { display: inline-block; width: 1.5em; }
   .copy { font-size: 0.85rem; line-height: 1.4; margin: 0 0 1em; max-width: 34rem; color: var(--muted); }
   /* one blank line (= 1 line-height, 1.4em) between paragraphs. margin-TOP on

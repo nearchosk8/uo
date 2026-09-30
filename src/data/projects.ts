@@ -29,6 +29,21 @@ import stf09 from "../assets/stf-luxury-09.jpeg";
 import stf10 from "../assets/stf-luxury-10.jpeg";
 import stf11 from "../assets/stf-luxury-11.jpeg";
 import stf12 from "../assets/stf-luxury-12.jpeg";
+// Welle (real photos, in the supplied order)
+import welle01 from "../assets/welle-01.jpeg";
+import welle02 from "../assets/welle-02.jpeg";
+import welle03 from "../assets/welle-03.jpeg";
+import welle04 from "../assets/welle-04.jpeg";
+import welle05 from "../assets/welle-05.jpeg";
+import welle06 from "../assets/welle-06.jpeg";
+import welle07 from "../assets/welle-07.jpeg";
+import welle08 from "../assets/welle-08.jpeg";
+import welle09 from "../assets/welle-09.jpeg";
+import welle10 from "../assets/welle-10.jpeg";
+import welle11 from "../assets/welle-11.jpeg";
+import welle12 from "../assets/welle-12.jpeg";
+import welle13 from "../assets/welle-13.jpeg";
+import welle14 from "../assets/welle-14.jpeg";
 
 export const CATEGORIES = ["Branding", "Digital", "Poster", "Book"] as const;
 export type Category = (typeof CATEGORIES)[number];
@@ -51,8 +66,16 @@ export type Project = {
   place: string;
   /** paragraphs; a "\n" inside one = a line break within that paragraph */
   description: string[];
+  /** optional hero title-row text (default: `name` without [brackets]) */
+  heroTitle?: string;
+  /** optional line directly under the hero title */
+  heroSubtitle?: string;
+  /** optional line directly under the meta line (e.g. an award) */
+  award?: string;
   /** optional small caption-style line under the description */
   details?: string;
+  /** optional links on a new line after `details`, joined by " | " (new tab) */
+  links?: { label: string; href: string }[];
   /** hero carousel (right column) + its caption label/ext */
   hero: CarouselSet;
   /** gallery inside the black panel. Either static `images` (2 = the default
@@ -83,10 +106,52 @@ export const projects: Project[] = [
     year: "2025",
     type: "Brand Identity",
     place: "Athens, Gr",
-    description: lorem,
-    hero: { slides: [ph(philosophy2, "Placeholder — project hero image 1"), ph(untitled2, "Placeholder — project hero image 2"), ph(untitled3, "Placeholder — project hero image 3")], label: "welle poster", ext: ".jpeg" },
-    gallery: { images: [ph(office1, "Placeholder — gallery image 1"), ph(office2, "Placeholder — gallery image 2")], label: "bs cards", ext: ".jpeg" },
-    preview: philosophy2,
+    heroTitle: "Welle Contemporary art & ceramics",
+    description: [
+      "Welle Contemporary Art & Ceramics is the personal project of sculptor Filipos-Lazaros Papadopoulos, based in Agia Paraskevi. The space offers tailor-made ceramics and workshops, focusing on handmade forms and clay experimentation.",
+      "The identity is inspired by the wave — welle in German — and the soft, moldable essence of the material.\nIt was expressed through textures, earthy tones, and papers like Materica.",
+      "All printed materials — posters, stickers, postcards, business cards, and packaging used Pantone 877C. Silkscreen printing was used only on t-shirts and tote bags. Photography and motion graphics reflect the organic, fluid nature of the brand.",
+    ],
+    details: "Primary Paper: Materica Pitch 250 gsm | 360 gsm",
+    // square hero: landscape #1, #2 and #4 keep 2/3 of their width
+    hero: {
+      slides: [
+        { img: welle01, alt: "Blocks of clay wrapped in plastic on a wooden studio shelf" },
+        { img: welle02, alt: "Black-and-white close-up of hands arranging flat clay slabs on a worktable" },
+        { img: welle03, alt: "Two dark grey Welle business cards with a die-cut wave pattern, lying on red rock" },
+        { img: welle04, alt: "A dark Welle postcard lying in shallow clear water over pebbles", position: "52% 50%" },
+      ],
+      label: "welle",
+      ext: ".jpeg",
+    },
+    // 4:5 panel carousels. #5 and #9 are landscape (keep ~53% of the width)
+    gallery: {
+      carousels: [
+        {
+          slides: [
+            { img: welle05, alt: "A dark grey Welle card resting on wet rocks beside a large white-veined stone", position: "20% 50%" },
+            { img: welle06, alt: "A Welle business card lying on a wet, rust-coloured rock" },
+            { img: welle07, alt: "A Welle poster with a ceramic bowl print, floating on clear green water" },
+            { img: welle08, alt: "A cream Welle tote bag with a black print, hanging from a red rock ledge", position: "50% 70%" },
+            { img: welle09, alt: "A Welle poster floating flat on rippling green water" },
+          ],
+          label: "print",
+          ext: ".jpeg",
+        },
+        {
+          slides: [
+            { img: welle10, alt: "Black-and-white photo of a sculptor sanding a large curved plaster mould under a desk lamp" },
+            { img: welle11, alt: "Several hands holding up handmade cups and a pink bottle against a white tiled wall" },
+            { img: welle12, alt: "Clay-covered hands shaping a small green cup on a potter's wheel" },
+            { img: welle13, alt: "Black-and-white photo of hands holding a freshly thrown clay bowl above the wheel" },
+            { img: welle14, alt: "A ceramicist in an apron kneading green clay at a wooden table, clay balls beside him" },
+          ],
+          label: "workshop",
+          ext: ".jpeg",
+        },
+      ],
+    },
+    preview: welle01,
   },
   {
     slug: "stf-luxury-suites",
@@ -176,11 +241,23 @@ export const projects: Project[] = [
     title: "Between Spaces",
     name: "Betw[e]en Spaces",
     subtitle: "Exhibition catalogue",
-    category: "Book",
-    year: "2024",
-    type: "Editorial",
+    category: "Digital",
+    year: "2025",
+    type: "editorial / Documentary",
     place: "Athens, Gr",
-    description: lorem,
+    heroTitle: "BETWEEN SPACES",
+    heroSubtitle: "Street Art & Athenian Routes.",
+    description: [
+      "Be A Part is a collaborative project with Untitled Office that explores urban identity through the actions, experiences, and perspectives of a city's inhabitants.",
+      "The project manifests as a multimedia platform, centered around two primary applications: a documentary series and a print publication. While the documentary captures the city's pulse through audiovisual storytelling, the print edition transforms the project into a participatory space. By inviting the audience to contribute their own material related to each theme, Be A Part evolves into a collective archive of shared urban narratives.",
+      'The project kicks off with its first episode, "Between Spaces," which asks: How many different cities are hidden within Athens itself?',
+      "This production explores the capital’s identity through the lives of those who shape it, featuring iconic graffiti artist Rtm One. Sharing his unique perspective on street aesthetics and the life that thrives between the city’s buildings, Rtm One helps launch an open dialogue between the city and its people.",
+    ],
+    details: "Episode 1",
+    links: [
+      { label: "Spotify", href: "https://open.spotify.com/episode/1ZuIKGvSouGsmyWhja3Ogt?si=a8a0c4cc6d7d45eb" },
+      { label: "Youtube", href: "https://youtu.be/Dk4p4guKeM4" },
+    ],
     hero: { slides: [ph(office3, "Placeholder — project hero image 1"), ph(philosophy1, "Placeholder — project hero image 2"), ph(untitled2, "Placeholder — project hero image 3")], label: "between spaces", ext: ".jpeg" },
     gallery: { images: [ph(phUntitled2, "Placeholder — gallery image 1"), ph(office2, "Placeholder — gallery image 2")], label: "spreads", ext: ".jpeg" },
     preview: office3,
@@ -191,10 +268,19 @@ export const projects: Project[] = [
     name: "Strat[o]s Kanakis Woodcrafts",
     subtitle: "Woodcraft workshop",
     category: "Branding",
-    year: "2024",
+    year: "2025",
     type: "Brand Identity",
     place: "Athens, Gr",
-    description: lorem,
+    // heroTitle: set to the wanted title-row text (defaults to `name` above)
+    award: "EBGE 2026 — Awarded in Corporate Identity",
+    heroTitle: "Stratos Kanakis",
+    description: [
+      "Stratos Kanakis Woodcraft is a branding project for a contemporary carpenter that openly engages with the reality of the profession in Athens. The identity draws inspiration from traditional craftsmen, without nostalgia or pretense, and incorporates a next-generation perspective that reflects presence, growth, and professionalism.",
+      "At its core is the tagline “In Athens I don’t have friends, only carpenters,” a satirical reference to the Taki Tsan lyric “in Athens I don’t have friends, only acquaintances”.",
+      "The brand identity uses humor, short statements, and wordplay to honestly comment on the well-known communication challenges within the craftsmen’s world. Typographic posters function as a key expressive tool, bringing rhythm, character, and clarity to an identity that communicates sincerity.",
+      "Using Gmund Naturals (Orange & Sable) and Fedrigoni Materica Acqua, the identity remains honest, handcrafted, and deeply human.",
+      "The project was awarded an EBGE 2026 Award in the Corporate Identity category, recognizing the identity’s approach to contemporary craft, communication, and visual expression.",
+    ],
     hero: { slides: [ph(untitled3, "Placeholder — project hero image 1"), ph(office1, "Placeholder — project hero image 2"), ph(phUntitled3, "Placeholder — project hero image 3")], label: "stratos kanakis", ext: ".jpeg" },
     gallery: { images: [ph(philosophy2, "Placeholder — gallery image 1"), ph(office3, "Placeholder — gallery image 2")], label: "cards", ext: ".jpeg" },
     preview: untitled3,
