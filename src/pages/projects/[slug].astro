@@ -44,7 +44,20 @@ const plainName = project.name.replace(/[\[\]]/g, "");
                 {d.split("\n").map((line, i) => <>{i > 0 && <br />}{line}</>)}
               </Reveal>
             ))}
-            {(project.details || project.links) && (
+            {project.detailLines ? (
+              <Reveal as="p" class="details mono">
+                {project.detailLines.map((line, i) => (
+                  <>
+                    {i > 0 && <br />}
+                    {line.map((part) =>
+                      typeof part === "string"
+                        ? part
+                        : <a class="u-link" href={part.href} target="_blank" rel="noopener">{part.label}</a>
+                    )}
+                  </>
+                ))}
+              </Reveal>
+            ) : (project.details || project.links) && (
               <Reveal as="p" class="details mono">
                 {project.details}
                 {project.links && (
@@ -75,7 +88,6 @@ const plainName = project.name.replace(/[\[\]]/g, "");
           <Reveal as="h1" class="h-display"><span class="w-word"><GlitchText text={project.name} /></span></Reveal>
           <span class="idx">({index})</span>
         </div>
-        <Reveal as="p" class="subtitle" data-invert>{project.subtitle}</Reveal>
 
         <div class="pp-images" style={`--n:${n}`}>
           {sets ? (
@@ -194,7 +206,6 @@ const plainName = project.name.replace(/[\[\]]/g, "");
   .w-word { position: relative; display: inline-block; padding-bottom: 0.06em; }
   .w-word::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: max(1px, 0.012em); background: currentColor; }
   .idx { font-family: var(--ff-display); font-weight: 500; font-size: clamp(1.95rem, 5.25vw, 4.5rem); line-height: 1; }
-  .subtitle { font-size: clamp(1rem, 1.2vw, 1.4rem); margin: clamp(1.2rem, 2.5vw, 2rem) 0 0; }
 
   .pp-images {
     display: grid;

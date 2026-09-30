@@ -29,6 +29,7 @@ import stf09 from "../assets/stf-luxury-09.jpeg";
 import stf10 from "../assets/stf-luxury-10.jpeg";
 import stf11 from "../assets/stf-luxury-11.jpeg";
 import stf12 from "../assets/stf-luxury-12.jpeg";
+import stfPreview from "../assets/stf-luxury-preview.jpeg"; // Projects-list hover preview
 // Welle (real photos, in the supplied order)
 import welle01 from "../assets/welle-01.jpeg";
 import welle02 from "../assets/welle-02.jpeg";
@@ -44,6 +45,7 @@ import welle11 from "../assets/welle-11.jpeg";
 import welle12 from "../assets/welle-12.jpeg";
 import welle13 from "../assets/welle-13.jpeg";
 import welle14 from "../assets/welle-14.jpeg";
+import wellePreview from "../assets/welle-preview.jpeg"; // Projects-list hover preview
 // Stratos Kanakis Woodcrafts (real photos, in the supplied order)
 import sk01 from "../assets/stratos-kanakis-01.jpeg";
 import sk02 from "../assets/stratos-kanakis-02.jpeg";
@@ -67,6 +69,19 @@ import bs07 from "../assets/between-spaces-07.jpeg";
 import bs08 from "../assets/between-spaces-08.jpeg";
 import bs09 from "../assets/between-spaces-09.jpeg";
 import bs10 from "../assets/between-spaces-10.jpeg";
+// Photo Diary 134 Exposures (real photos, in folder name order)
+import pd01 from "../assets/photo-diary-01.jpeg";
+import pd02 from "../assets/photo-diary-02.jpeg";
+import pd03 from "../assets/photo-diary-03.jpeg";
+import pd04 from "../assets/photo-diary-04.jpeg";
+import pd05 from "../assets/photo-diary-05.jpeg";
+import pd06 from "../assets/photo-diary-06.jpeg";
+import pd07 from "../assets/photo-diary-07.jpeg";
+import pd08 from "../assets/photo-diary-08.jpeg";
+import pd09 from "../assets/photo-diary-09.jpeg";
+import pd10 from "../assets/photo-diary-10.jpeg";
+import pd11 from "../assets/photo-diary-11.jpeg";
+import pd12 from "../assets/photo-diary-12.jpeg";
 
 export const CATEGORIES = ["Branding", "Digital", "Poster", "Book"] as const;
 export type Category = (typeof CATEGORIES)[number];
@@ -76,12 +91,14 @@ export type Slide = { img: ImageMetadata; alt: string; position?: string };
 export type CarouselSet = { slides: Slide[]; label: string; ext: string };
 
 export type Project = {
+  /** true = kept in the data but left off the live site (list, pages,
+   *  Next Project). Remove the flag to publish it again. */
+  hidden?: boolean;
   slug: string;
   /** list title */
   title: string;
   /** display name on the project page; [x] = pixel glyph */
   name: string;
-  subtitle: string;
   category: Category;
   year: string;
   /** small meta line: "— {type}   {place}" */
@@ -99,6 +116,10 @@ export type Project = {
   details?: string;
   /** optional links on a new line after `details`, joined by " | " (new tab) */
   links?: { label: string; href: string }[];
+  /** optional multi-line details with inline links (new tab). When set, it
+   *  replaces `details` + `links`: one array per line, each piece either
+   *  plain text or a link. */
+  detailLines?: (string | { label: string; href: string })[][];
   /** hero carousel (right column) + its caption label/ext */
   hero: CarouselSet;
   /** gallery inside the black panel. Either static `images` (2 = the default
@@ -119,12 +140,11 @@ const lorem = [
 
 const ph = (img: ImageMetadata, alt: string): Slide => ({ img, alt });
 
-export const projects: Project[] = [
+export const allProjects: Project[] = [
   {
     slug: "welle",
     title: "Welle Contemporary art & ceramics",
     name: "[W]elle",
-    subtitle: "Contemporary art & ceramics",
     category: "Branding",
     year: "2025",
     type: "Brand Identity",
@@ -174,13 +194,12 @@ export const projects: Project[] = [
         },
       ],
     },
-    preview: welle01,
+    preview: wellePreview,
   },
   {
     slug: "stf-luxury-suites",
     title: "Stf Luxury Suites",
     name: "ST[F] Luxury Suites",
-    subtitle: "Luxury suites",
     category: "Branding",
     year: "2025",
     type: "Brand Identity",
@@ -229,13 +248,13 @@ export const projects: Project[] = [
         },
       ],
     },
-    preview: office2,
+    preview: stfPreview,
   },
   {
     slug: "linen-pro",
+    hidden: true,
     title: "Linen Pro",
     name: "Lin[e]n Pro",
-    subtitle: "Textile brand",
     category: "Digital",
     year: "2024",
     type: "Digital Identity",
@@ -247,9 +266,9 @@ export const projects: Project[] = [
   },
   {
     slug: "helma-construction-machinery",
+    hidden: true,
     title: "Helma Construction Machinery",
     name: "H[e]lma",
-    subtitle: "Construction machinery",
     category: "Branding",
     year: "2024",
     type: "Brand Identity",
@@ -263,7 +282,6 @@ export const projects: Project[] = [
     slug: "between-spaces",
     title: "Between Spaces",
     name: "Betw[e]en Spaces",
-    subtitle: "Exhibition catalogue",
     category: "Digital",
     year: "2025",
     type: "editorial / Documentary",
@@ -319,7 +337,6 @@ export const projects: Project[] = [
     slug: "stratos-kanakis-woodcrafts",
     title: "Stratos Kanakis Woodcrafts",
     name: "Strat[o]s Kanakis Woodcrafts",
-    subtitle: "Woodcraft workshop",
     category: "Branding",
     year: "2025",
     type: "Brand Identity",
@@ -372,9 +389,9 @@ export const projects: Project[] = [
   },
   {
     slug: "neue-poster",
+    hidden: true,
     title: "Neue Poster",
     name: "N[e]ue Poster",
-    subtitle: "Poster series",
     category: "Poster",
     year: "2023",
     type: "Poster",
@@ -388,21 +405,62 @@ export const projects: Project[] = [
     slug: "photo-diary-134-exposures",
     title: "Photo Diary 134 Exposures",
     name: "Ph[o]to Diary",
-    subtitle: "134 exposures",
     category: "Book",
-    year: "2023",
-    type: "Editorial",
-    place: "Athens, Gr",
-    description: lorem,
-    hero: { slides: [ph(untitled3, "Placeholder — project hero image 1"), ph(office2, "Placeholder — project hero image 2"), ph(philosophy2, "Placeholder — project hero image 3")], label: "photo diary", ext: ".jpeg" },
-    gallery: { images: [ph(office1, "Placeholder — gallery image 1"), ph(phUntitled3, "Placeholder — gallery image 2")], label: "spreads", ext: ".jpeg" },
-    preview: untitled3,
+    year: "2025",
+    type: "Editorial Design",
+    place: "Athens - Corfu, Gr",
+    heroTitle: "Photo Diary 134 Exposures",
+    description: [
+      "Photo Diary — 134 Exposures is a photographic journal created for photographer Markella Floka, functioning as an archive of memory and personal narrative. The images capture fleeting moments suspended between the present and what is already lost, evoking a quiet sense of nostalgia.",
+      "The design follows the fluid nature of memory, alternating between black & white and color — mirroring how recollections shift between vivid and faded. Printed on Arena paper, the 150-page book allows the images to breathe with subtlety and restraint.",
+      "Inserted negative sheets act as temporal pauses, while Keaykolour Deep Black and Pumpkin 120 gsm papers reinforce a cohesive visual language. The result is not just a photobook, but a contemplative experience — where memory takes form, and absence becomes tangible.",
+    ],
+    detailLines: [
+      ["Primary Papers: ", { label: "arena rough 120 gsm Fedrigoni", href: "https://specialpapers.fedrigoni.com/swatchbook/arena/" }],
+      ["Tip ins / Cover: Keaykolour Deep Black | Keaykolour Pumpkin 120 gsm/300gsm"],
+    ],
+    hero: {
+      slides: [
+        { img: pd01, alt: "Hands leafing through the open photobook on a sunlit stone ledge" },
+        { img: pd02, alt: "Square graphic with orange and black photographic textures and white monospace type" },
+        { img: pd03, alt: "The photobook open at an orange-tinted spread on warm stone, a hand holding the page" },
+        { img: pd04, alt: "The black Photo Diary, 134 Exposures cover propped on a blue and white cord chair", position: "50% 30%" },
+      ],
+      label: "book",
+      ext: ".jpeg",
+    },
+    // 4:5 panel carousels. #9 is landscape (keeps ~53% of the width)
+    gallery: {
+      carousels: [
+        {
+          slides: [
+            { img: pd05, alt: "The black photobook leaning against the rear of a white vintage car" },
+            { img: pd06, alt: "Someone holding the open photobook up against the sun above a metal chair base" },
+            { img: pd07, alt: "The orange-covered edition lying on a black and white patterned blanket" },
+            { img: pd08, alt: "Hands turning a page of the photobook on a patterned blanket" },
+          ],
+          label: "reading",
+          ext: ".jpeg",
+        },
+        {
+          slides: [
+            { img: pd09, alt: "A black and an orange copy of the book lying on weathered stone slabs", position: "70% 50%" },
+            { img: pd10, alt: "The photobook resting on the louvred rear grille of a cream vintage car" },
+            { img: pd11, alt: "The black photobook lying on a heap of fishing nets and ropes" },
+            { img: pd12, alt: "The photobook on a stone ledge below a carved Latin inscription dated 1699" },
+          ],
+          label: "places",
+          ext: ".jpeg",
+        },
+      ],
+    },
+    preview: pd04,
   },
   {
     slug: "porsche-911-carrera",
+    hidden: true,
     title: "Porsche 911 Carrera",
     name: "Carr[e]ra",
-    subtitle: "Poster",
     category: "Poster",
     year: "2023",
     type: "Poster",
@@ -413,6 +471,12 @@ export const projects: Project[] = [
     preview: phUntitled2,
   },
 ];
+
+/** what the site shows: every project without `hidden`, in list order */
+export const projects: Project[] = allProjects.filter((p) => !p.hidden);
+
+/** filter tabs that have at least one visible project */
+export const visibleCategories = CATEGORIES.filter((c) => projects.some((p) => p.category === c));
 
 export const nextProject = (slug: string): Project => {
   const i = projects.findIndex((p) => p.slug === slug);

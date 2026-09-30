@@ -8,7 +8,7 @@ import YearsBanner from "../components/YearsBanner.astro";
 import ArrowOrbs from "../components/ArrowOrbs.astro";
 import GlitchText from "../components/GlitchText.astro";
 import { getImage } from "astro:assets";
-import { projects, CATEGORIES } from "../data/projects";
+import { projects, visibleCategories } from "../data/projects";
 import Carousel from "../components/Carousel.astro";
 import hero1 from "../assets/projects-hero-1.jpeg";
 import hero2 from "../assets/projects-hero-2.jpeg";
@@ -39,7 +39,7 @@ const previews = await Promise.all(
           <!-- filters: works list only (hero stays); ALL active by default -->
           <div class="filters mono" role="group" aria-label="Filter projects by category" data-filters>
             <button type="button" class="filter is-active" data-filter="all" aria-pressed="true">All</button>
-            {CATEGORIES.map((c) => (
+            {visibleCategories.map((c) => (
               <button type="button" class="filter" data-filter={c} aria-pressed="false">{c}</button>
             ))}
           </div>
