@@ -44,6 +44,16 @@
   --ff-pixelscript: "pf-pixelscript", monospace;
 
   --edge: clamp(1.25rem, 2.6vw, 3rem); /* page side gutter */
+
+  /* arrow-circle pair (ArrowOrbs) — one shared size for every pair on the
+     site: big diameter = 12.6 × the Projects hero text size (≈263px at
+     1440px wide), and a 7.5px resting gap. */
+  --orb-hero: calc(12.6 * clamp(1rem, 1.45vw, 27.5px));
+  --orb-hero-gap: 7.5px;
+}
+@media (max-width: 820px) {
+  /* same 12.6× rule against the mobile text size */
+  :root { --orb-hero: calc(12.6 * clamp(1rem, 3.4vw, 1.25rem)); }
 }
 
 /* light grayscale (default) */
@@ -233,15 +243,25 @@ main {
    releases cleanly into YearsBanner. Pure CSS, no JS.
    ============================================================ */
 .reveal-stack { position: relative; }
-.reveal-stack > .about {
+/* .stack-pin / .stack-rise = the same two roles, opt-in for other pages (Projects) */
+.reveal-stack > .about,
+.reveal-stack > .stack-pin {
   position: sticky;
   top: 0;
   z-index: 0;
   background: var(--bg);
 }
-.reveal-stack > .philosophy {
+.reveal-stack > .philosophy,
+.reveal-stack > .stack-rise {
   position: relative;
   z-index: 1;
+}
+/* opt-in pages (Projects, project pages): no pin on small screens — their
+   stacked heroes are taller than a phone screen, and a pinned element taller
+   than the viewport has its bottom covered before it can be seen. The panel
+   just follows the hero. (Homepage .about is unaffected.) */
+@media (max-width: 820px) {
+  .reveal-stack > .stack-pin { position: relative; }
 }
 
 /* Proportional scaling above the 1900px artboard. Below 1900px the root

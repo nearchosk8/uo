@@ -1,0 +1,23 @@
+---
+// Display text with pixel-font "glitch" glyphs: mark them with [brackets]
+// in `text`, e.g. "Recent wor[k]s" → the k is set in --ff-pixelscript (the
+// same treatment as the in-progress page / "Our Office"). Inherits font,
+// size and colour from its parent.
+const { text = "", class: className } = Astro.props;
+const parts = String(text)
+  .split(/(\[[^\]]+\])/)
+  .filter(Boolean)
+  .map((s) => (s.startsWith("[") ? { t: s.slice(1, -1), px: true } : { t: s, px: false }));
+---
+<span class:list={["glitch", className]}>
+  {parts.map((p) => (p.px ? <span class="px">{p.t}</span> : p.t))}
+</span>
+
+<style>
+  /* line-height: 0 → the pixel glyph's inline box has no height, so the pixel
+     font's own (different) ascent/descent can't stretch the surrounding line
+     box. Every word then gets the same box as plain display text, and any
+     rule drawn at a word's box bottom (e.g. the underlined heading words)
+     lines up across words. The glyph itself still paints normally. */
+  .px { font-family: var(--ff-pixelscript); font-weight: 400; font-style: normal; line-height: 0; }
+</style>

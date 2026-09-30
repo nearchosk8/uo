@@ -1,0 +1,115 @@
+---
+// The comp’s circle pair: a large muted circle and a smaller ink circle (60%
+// of its diameter), bottoms aligned. Both use the same arrow.svg glyph (a
+// filled circle with the fork arrow cut out, so the arrow shows the page
+// colour), rotated per circle via `big` / `small`:
+// "right" | "down" | "up-right" | "down-right".
+// `size` = the big circle’s diameter (any CSS length); the small one and the
+// gap follow it.
+//
+// Each circle is its OWN element with its OWN hover, so hovering one never
+// animates the other (the wrapper is a plain, inert span):
+//   href / label           → the big circle is a link (label required)
+//   smallHref              → the small circle also links there (mouse
+//                            convenience: kept out of the tab order and hidden
+//                            from screen readers, since the big one already
+//                            announces the same destination)
+// A circle without a link is decorative (aria-hidden).
+const {
+  big = "down",
+  small = "down-right",
+  // optional overrides; by default every pair uses the shared tokens in
+  // global.css (--orb-hero / --orb-hero-gap) so pairs can't drift apart
+  size,
+  // resting gap between the circles' edges (any CSS length)
+  gap,
+  href,
+  label,
+  smallHref,
+  class: className,
+} = Astro.props;
+const ROT: Record<string, number> = { right: 0, down: 90, "up-right": -45, "down-right": 45 };
+const GLYPH = "M437.31,40.61c-219.09,0-396.7,177.61-396.69,396.7,0,219.09,177.61,396.7,396.7,396.69,219.1,0,396.7-177.61,396.7-396.7,0-219.1-177.61-396.7-396.7-396.7M683.96,405.08v64.45s0,.19,0,.19c0,0-.02,0-.04,0h0s-.58,0-.58,0c-76.65,21.66-128.41,79.02-128.41,168.01,0,18.35,2.2,35.45,6.43,51.02h-55.67c-2.96-16.16-4.57-33.17-4.57-51.02,0-69.54,23.85-126.8,64.37-168.01H190.66s0-62.1,0-62.1h377.69c-.93-.92-1.92-1.78-2.84-2.72-40.52-41.2-64.37-98.47-64.37-168.02,0-17.85,1.6-34.86,4.57-51.02h55.67c-4.23,15.57-6.43,32.66-6.43,51.02,0,89,51.77,146.36,128.43,168.02.07.04.17.06.26.08.11-.03.22-.06.33-.09v.19Z";
+const BigTag = href ? "a" : "span";
+const bigAttrs = href ? { href, "aria-label": label } : { "aria-hidden": "true" };
+const SmallTag = smallHref ? "a" : "span";
+const smallAttrs = smallHref ? { href: smallHref, tabindex: "-1", "aria-hidden": "true" } : { "aria-hidden": "true" };
+---
+<span class:list={["orbs", className]} style={[size && `--orb:${size}`, gap && `--orb-gap:${gap}`].filter(Boolean).join("; ") || undefined}>
+  <BigTag class="orb orb--big" style={`--rot:${ROT[big] ?? 90}deg`} {...bigAttrs}>
+    <svg viewBox="0 0 874.62 874.62" fill="currentColor" aria-hidden="true"><path d={GLYPH} /></svg>
+  </BigTag>
+  <SmallTag class="orb orb--small" style={`--rot:${ROT[small] ?? 45}deg`} {...smallAttrs}>
+    <svg viewBox="0 0 874.62 874.62" fill="currentColor" aria-hidden="true"><path d={GLYPH} /></svg>
+  </SmallTag>
+</span>
+
+<style>
+  /* sizes derive from --orb (the big diameter), so no % padding: percentage
+     padding resolves against the *parent’s* width */
+  .orbs {
+    /* shared defaults (global.css); an inline size/gap prop overrides them */
+    --orb: var(--orb-hero);
+    --orb-gap: var(--orb-hero-gap);
+    display: inline-flex;
+    align-items: flex-end; /* bottoms aligned (at rest) */
+    gap: var(--orb-gap); /* resting gap */
+    color: inherit;
+    /* magnet repel: extra gap on hover, as a fraction of the big diameter */
+    --spread: 0.06;
+    /* each circle moves half of it, along the line between the two centres.
+       With a 60% small circle and a 5% gap, bottoms aligned, the big→small
+       centre vector is (0.85, 0.20)·D → unit (0.973, 0.229). The extra
+       distance doesn't depend on the resting gap; other gaps (e.g. the
+       Projects hero's 15px) tilt the true line by < 0.5°, so it's kept fixed */
+    --push: calc(var(--orb) * var(--spread) / 2);
+  }
+
+  /* .orb = the STATIC round hit area (link or decorative span): it never moves,
+     so a circle can’t slide out from under the cursor (no hover flicker).
+     Everything visual happens on the svg inside, via the separate translate /
+     rotate / scale properties, which combine instead of overwriting. */
+  .orb {
+    display: block;
+    flex: none;
+    border-radius: 50%; /* hit area = the circle, not its square corners */
+    transition: color 280ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .orb svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    rotate: var(--rot, 0deg);
+    transition:
+      scale 280ms cubic-bezier(0.16, 1, 0.3, 1),
+      /* spread: ease-out with a very slight overshoot (magnetic) */
+      translate 350ms cubic-bezier(0.34, 1.35, 0.64, 1);
+  }
+  .orb--big { width: var(--orb); height: var(--orb); color: var(--muted); }
+  .orb--small { width: calc(var(--orb) * 0.6); height: calc(var(--orb) * 0.6); color: var(--fg); }
+
+  /* per-circle: scale + colour swap on its OWN hover (real-hover devices only,
+     so nothing sticks after a tap). Pointer cursor + focus ring: links only. */
+  a.orb { cursor: pointer; }
+  @media (hover: hover) {
+    .orb:hover svg { scale: 1.06; }
+    .orb--big:hover { color: var(--fg); }
+    .orb--small:hover { color: var(--muted); }
+    /* pair: either circle hovered → both drift apart */
+    .orbs:has(.orb:hover) .orb--big svg { translate: calc(var(--push) * -0.973) calc(var(--push) * -0.229); }
+    .orbs:has(.orb:hover) .orb--small svg { translate: calc(var(--push) * 0.973) calc(var(--push) * 0.229); }
+  }
+  a.orb:focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
+  a.orb:focus-visible svg { scale: 1.06; }
+  a.orb--big:focus-visible { color: var(--fg); }
+  a.orb--small:focus-visible { color: var(--muted); }
+  .orbs:has(a.orb:focus-visible) .orb--big svg { translate: calc(var(--push) * -0.973) calc(var(--push) * -0.229); }
+  .orbs:has(a.orb:focus-visible) .orb--small svg { translate: calc(var(--push) * 0.973) calc(var(--push) * 0.229); }
+
+  /* reduced motion: no spread at all (the global rule already makes the
+     scale/colour instant) */
+  @media (prefers-reduced-motion: reduce) {
+    .orbs .orb svg { translate: none !important; }
+  }
+</style>

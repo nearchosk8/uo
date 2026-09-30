@@ -1,0 +1,295 @@
+---
+import Base from "../layouts/Base.astro";
+import Header from "../components/Header.astro";
+import MenuOverlay from "../components/MenuOverlay.astro";
+import Footer from "../components/Footer.astro";
+import Reveal from "../components/Reveal.astro";
+import YearsBanner from "../components/YearsBanner.astro";
+import ArrowOrbs from "../components/ArrowOrbs.astro";
+import GlitchText from "../components/GlitchText.astro";
+import { getImage } from "astro:assets";
+import { projects, CATEGORIES } from "../data/projects";
+import Carousel from "../components/Carousel.astro";
+import hero1 from "../assets/projects-hero-1.jpeg";
+import hero2 from "../assets/projects-hero-2.jpeg";
+import hero3 from "../assets/projects-hero-3.jpeg";
+
+// hero carousel (square frame; crop positions keep each subject in —
+// #3 is landscape, so most of the monstera on its left is cropped away)
+const heroSlides = [
+  { img: hero1, alt: "Close-up of hands working on a small metal piece over a green cutting mat, jewellery tools on the desk behind", position: "50% 75%" },
+  { img: hero2, alt: "An open spiral sketchbook with an abstract silver and gold drawing, in raking afternoon light" },
+  { img: hero3, alt: "A person in a brown work jacket reading an orange book held up in front of their face, another book in their pocket, beside a monstera", position: "85% 50%" },
+];
+
+// optimised URLs for the cursor-following hover previews (portrait, small)
+const previews = await Promise.all(
+  projects.map(async (p) => (await getImage({ src: p.preview, width: 520, format: "webp" })).src)
+);
+---
+<Base title="Projects — Untitled Office">
+  <MenuOverlay />
+  <Header />
+  <main>
+    <!-- hero is pinned; the black "Recent works" block folds up over it
+         (same .reveal-stack mechanism as Philosophy on the homepage) -->
+    <div class="reveal-stack">
+      <section class="pj-hero stack-pin edge">
+        <div class="pj-text">
+          <!-- filters: works list only (hero stays); ALL active by default -->
+          <div class="filters mono" role="group" aria-label="Filter projects by category" data-filters>
+            <button type="button" class="filter is-active" data-filter="all" aria-pressed="true">All</button>
+            {CATEGORIES.map((c) => (
+              <button type="button" class="filter" data-filter={c} aria-pressed="false">{c}</button>
+            ))}
+          </div>
+
+          <div class="pj-lede">
+            <Reveal as="p" class="lede">
+              <span class="u-link">No logo</span>. <span class="u-link">No name</span>. <span class="u-link">No template</span>.
+            </Reveal>
+            <Reveal as="p" class="lede lede--body">
+              Branding, for us, is not a style — it’s a structure.<br />
+              We design identities that speak without shouting, evolve without explanation, and live across mediums with quiet confidence.
+            </Reveal>
+            <Reveal as="div" class="orbs-row">
+              <!-- size + gap: the shared --orb-hero / --orb-hero-gap tokens
+                   (12.6× this text size, 7.5px) -->
+              <ArrowOrbs big="down" small="down-right" href="#works" label="Scroll to recent works" smallHref="#works" />
+            </Reveal>
+          </div>
+        </div>
+
+        <div class="pj-img">
+          <Carousel slides={heroSlides} leftLabel="studio" ext=".jpeg" ratio="1 / 1" />
+        </div>
+      </section>
+
+      <div class="works-block stack-rise" data-invert>
+        <section class="works edge" id="works">
+          <div class="works-head">
+            <Reveal as="h1" class="h-display">
+              <span class="w-word"><GlitchText text="Recent" /></span>
+              <span class="w-word"><GlitchText text="wor[k]s" /></span>
+            </Reveal>
+            <span class="h-display copy-year">©26</span>
+          </div>
+
+          <div class="rows" data-works>
+            {projects.map((p, i) => (
+              <Reveal as="a" class="row" href={`/projects/${p.slug}`} data-category={p.category} data-preview={previews[i]}>
+                <span class="row-in">
+                  <span class="row-title">{p.title}</span>
+                  <span class="row-idx mono">({i + 1})</span>
+                </span>
+              </Reveal>
+            ))}
+          </div>
+          <p class="rows-empty mono" data-works-empty hidden>No projects in this category yet.</p>
+        </section>
+      </div>
+    </div>
+
+    <!-- after the pinned stack, on the page surface (as on the homepage) -->
+    <YearsBanner />
+  </main>
+  <Footer />
+
+  <!-- cursor-following preview (mouse devices only; driven by the script) -->
+  <img class="preview" data-preview-img alt="" aria-hidden="true" hidden />
+</Base>
+
+<style>
+  /* ---------- hero (mirrors the homepage About split) ---------- */
+  .pj-hero {
+    display: grid;
+    grid-template-columns: 1fr 46%;
+    gap: clamp(1.5rem, 4vw, 4rem);
+    align-items: stretch;
+    padding-top: clamp(1rem, 3vw, 3rem);
+    padding-bottom: clamp(3rem, 7vw, 6rem);
+  }
+  /* filters on top, lede centred in the remaining height (flex, not absolute,
+     so a tall lede grows the row instead of overlapping the filters) */
+  .pj-text { display: flex; flex-direction: column; }
+  .pj-lede {
+    margin-block: auto;
+    padding-block: clamp(1.5rem, 3vw, 2.5rem);
+    /* design: body text ≈ 1.45vw (smaller than the site's 1.74vw lede) */
+    --lede-fs: clamp(1rem, 1.45vw, 27.5px);
+  }
+  .pj-img { justify-self: end; width: 100%; }
+
+  .filters { display: flex; flex-wrap: wrap; gap: clamp(1rem, 2.4vw, 2.2rem); }
+  .filter {
+    background: none; border: 0; padding: 0; cursor: pointer;
+    font: inherit; letter-spacing: inherit; text-transform: inherit; color: var(--fg);
+    transition: color 180ms ease;
+  }
+  .filter:hover, .filter:focus-visible { color: var(--muted); outline: none; }
+  .filter.is-active { text-decoration: underline; text-underline-offset: 0.14em; text-decoration-thickness: 0.055em; }
+
+  .lede { font-size: var(--lede-fs); line-height: 1.4; margin: 0; }
+  /* ~32em measure → "…evolve without" ends a line, as in the design,
+     independent of viewport (the break is relative to the text size) */
+  .lede--body { max-width: 32em; }
+  /* one blank line (= line-height) between the two paragraphs. margin-TOP on
+     purpose: the reveal mask rule (html.js-reveal .reveal-on-scroll) forces
+     margin-bottom: -0.2em on every Reveal, which ate the old margin-bottom;
+     its matching 0.2em padding makes the visible gap exactly 1.4em. */
+  .pj-lede .lede + .lede { margin-top: 1.4em; }
+  /* design: ~4 lines of space above the circles */
+  .orbs-row { margin-top: calc(var(--lede-fs) * 4); }
+  /* the reveal mask (overflow: hidden) would crop the circles' hover spread +
+     scale (≤ ~7% of the big diameter past their boxes). Bleed room on every
+     side, cancelled by equal negative margins → layout/position unchanged. */
+  :global(html.js-reveal) .orbs-row {
+    --bleed: calc(var(--orb-hero) * 0.08);
+    padding: var(--bleed);
+    margin: calc(var(--lede-fs) * 4 - var(--bleed)) calc(-1 * var(--bleed)) calc(-1 * var(--bleed));
+  }
+
+  /* ---------- Recent works (black block, folds over the hero) ---------- */
+  .works-block {
+    background: var(--panel);
+    color: var(--on-panel);
+    /* same radius on all four corners (was top-only) */
+    border-radius: clamp(18px, 1.8vw, 30px);
+    /* row dividers on the inverted panel: the page hairline (from --fg)
+       would vanish here, so derive it from --on-panel */
+    --hairline: color-mix(in srgb, var(--on-panel) 22%, transparent);
+  }
+  /* same top/bottom rhythm as the homepage Philosophy panel, so the panel
+     ends with a deliberate block of space under the last row */
+  .works {
+    padding-top: clamp(2.5rem, 6vw, 5rem);
+    padding-bottom: clamp(3rem, 7vw, 6rem);
+  }
+  .works-head { display: flex; justify-content: space-between; align-items: baseline; gap: 2rem; }
+  .h-display {
+    font-family: var(--ff-display);
+    font-weight: 500; /* display cut ships 500/700 only */
+    font-size: clamp(2.6rem, 7vw, 6rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin: 0;
+  }
+  .w-word { position: relative; display: inline-block; padding-bottom: 0.06em; }
+  .w-word::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: max(1px, 0.012em); background: currentColor; }
+  .copy-year { white-space: nowrap; }
+
+  .rows { margin-top: clamp(1.5rem, 3vw, 2.5rem); }
+  .row {
+    display: block;
+    color: inherit;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .row[hidden] { display: none; }
+  .row-in {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    align-items: baseline;
+    gap: 1rem;
+    padding-block: clamp(0.35rem, 0.8vw, 0.6rem);
+    transition: filter 250ms ease;
+  }
+  .row-title { font-size: clamp(1.5rem, 3.4vw, 2.6rem); letter-spacing: -0.02em; line-height: 1.1; }
+  .row-idx { color: inherit; }
+  /* hover: same blur as the menu items */
+  .row:hover .row-in, .row:focus-visible .row-in { filter: blur(3px); }
+  .row:focus-visible { outline: none; }
+  .rows-empty { margin: 1.5rem 0 0; color: var(--muted); }
+
+  /* cursor-following preview: fixed, under the custom cursor (9999), no hit-testing */
+  .preview {
+    position: fixed;
+    top: 0; left: 0;
+    width: clamp(8rem, 19.8vw, 22rem);
+    aspect-ratio: 9 / 13;
+    object-fit: cover;
+    pointer-events: none;
+    z-index: 40;
+    opacity: 0;
+    transition: opacity 250ms ease;
+    will-change: transform;
+  }
+  .preview.is-on { opacity: 1; }
+
+  @media (max-width: 820px) {
+    .pj-hero { grid-template-columns: 1fr; align-items: start; }
+    .pj-img { order: -1; }
+    /* stacked: normal flow; text (and the circles, which follow it) at the
+       site's mobile lede size */
+    .pj-lede { margin-block: clamp(1.2rem, 2.5vw, 2rem) 0; padding-block: 0; --lede-fs: clamp(1rem, 3.4vw, 1.25rem); }
+    .lede br { display: none; }
+    .row-in { grid-template-columns: 1fr auto; }
+    .preview { display: none; }
+  }
+</style>
+
+<script>
+  // ---- filters: show/hide rows by category (ALL by default) ----
+  const filters = document.querySelector("[data-filters]");
+  const rows = Array.from(document.querySelectorAll<HTMLElement>("[data-works] [data-category]"));
+  const empty = document.querySelector<HTMLElement>("[data-works-empty]");
+  filters?.addEventListener("click", (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>("[data-filter]");
+    if (!btn) return;
+    const f = btn.dataset.filter || "all";
+    filters.querySelectorAll<HTMLButtonElement>("[data-filter]").forEach((b) => {
+      const on = b === btn;
+      b.classList.toggle("is-active", on);
+      b.setAttribute("aria-pressed", String(on));
+    });
+    let shown = 0;
+    rows.forEach((r) => {
+      const on = f === "all" || r.dataset.category === f;
+      r.hidden = !on;
+      if (on) shown++;
+    });
+    if (empty) empty.hidden = shown > 0;
+  });
+
+  // ---- hover preview: follows the cursor with a slight lag; mouse only ----
+  const img = document.querySelector<HTMLImageElement>("[data-preview-img]");
+  const list = document.querySelector<HTMLElement>("[data-works]");
+  const fine = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  if (img && list && fine) {
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const EASE = reduce ? 1 : 0.18; // 1 = no lag under reduced motion
+    const OFF_X = 40, OFF_Y = 24;    // preview sits right/below the pointer (as in the comp)
+    let tx = 0, ty = 0, x = 0, y = 0, raf = 0, on = false;
+
+    const place = () => { img.style.transform = `translate(${x + OFF_X}px, ${y + OFF_Y}px)`; };
+    const loop = () => {
+      x += (tx - x) * EASE; y += (ty - y) * EASE;
+      place();
+      if (on || Math.abs(tx - x) > 0.5 || Math.abs(ty - y) > 0.5) raf = requestAnimationFrame(loop);
+      else raf = 0;
+    };
+    const show = () => {
+      if (on) return;
+      on = true; x = tx; y = ty; place();
+      img.hidden = false;
+      requestAnimationFrame(() => img.classList.add("is-on"));
+      if (!raf) raf = requestAnimationFrame(loop);
+    };
+    const hide = () => {
+      on = false;
+      img.classList.remove("is-on");
+    };
+
+    list.addEventListener("pointermove", (e) => { tx = e.clientX; ty = e.clientY; });
+    list.addEventListener("pointerover", (e) => {
+      const row = (e.target as HTMLElement).closest<HTMLElement>("[data-preview]");
+      if (!row) return;
+      const src = row.dataset.preview || "";
+      if (img.getAttribute("src") !== src) img.setAttribute("src", src);
+      show();
+    });
+    list.addEventListener("pointerleave", hide);
+    // the image stays in the DOM (hidden via opacity) so re-entry is instant;
+    // fully hide it once faded so it can't be read by assistive tech
+    img.addEventListener("transitionend", () => { if (!on) img.hidden = true; });
+  }
+</script>

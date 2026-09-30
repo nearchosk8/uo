@@ -1,0 +1,248 @@
+---
+import Base from "../../layouts/Base.astro";
+import Header from "../../components/Header.astro";
+import MenuOverlay from "../../components/MenuOverlay.astro";
+import Footer from "../../components/Footer.astro";
+import Reveal from "../../components/Reveal.astro";
+import Figure from "../../components/Figure.astro";
+import Carousel from "../../components/Carousel.astro";
+import ArrowOrbs from "../../components/ArrowOrbs.astro";
+import GlitchText from "../../components/GlitchText.astro";
+import { projects, nextProject, type Project } from "../../data/projects";
+
+// one static page per entry in src/data/projects.ts
+export function getStaticPaths() {
+  return projects.map((p) => ({ params: { slug: p.slug }, props: { project: p } }));
+}
+const { project } = Astro.props as { project: Project };
+const index = projects.findIndex((p) => p.slug === project.slug) + 1;
+const next = nextProject(project.slug);
+const nextHref = `/projects/${next.slug}`;
+// gallery: per-set carousels (new) or static images + one shared caption (default)
+const sets = project.gallery.carousels;
+const statics = project.gallery.images;
+const n = sets ? sets.length : statics.length;
+const metaDescription = project.description[0].replace(/\n/g, " ");
+// hero title: the display name without the [pixel-glyph] brackets
+const plainName = project.name.replace(/[\[\]]/g, "");
+---
+<Base title={`${project.title} — Untitled Office`} description={metaDescription}>
+  <MenuOverlay />
+  <Header />
+  <main>
+    <div class="reveal-stack">
+      <!-- hero: meta + description left, carousel right (About split) -->
+      <section class="pd-hero stack-pin edge">
+        <div class="pd-text">
+          <div class="pd-lede">
+            <Reveal as="p" class="pd-title">{plainName}<span class="pd-year">{project.year}</span></Reveal>
+            <Reveal as="p" class="meta">— {project.type}<span class="meta-gap" aria-hidden="true"></span>{project.place}</Reveal>
+            {project.description.map((d) => (
+              <Reveal as="p" class="copy">
+                {d.split("\n").map((line, i) => <>{i > 0 && <br />}{line}</>)}
+              </Reveal>
+            ))}
+            {project.details && <Reveal as="p" class="details mono">{project.details}</Reveal>}
+            <Reveal as="div" class="orbs-row">
+              <ArrowOrbs big="down" small="down-right" href="#gallery" label="Scroll to project images" smallHref="#gallery" />
+            </Reveal>
+          </div>
+        </div>
+        <div class="pd-img">
+          <Carousel slides={project.hero.slides} leftLabel={project.hero.label} ext={project.hero.ext} ratio="1 / 1" />
+        </div>
+      </section>
+
+      <!-- black panel folding over the hero; images spill past its bottom edge
+           (same construction as PhilosophySection) -->
+      <section class="pd-panel stack-rise edge" id="gallery" style="--panel-h: clamp(28rem, 48vw, 42rem)">
+        <div class="pp-bg" data-invert aria-hidden="true"></div>
+        <div class="pp-head" data-invert>
+          <Reveal as="h1" class="h-display"><span class="w-word"><GlitchText text={project.name} /></span></Reveal>
+          <span class="idx">({index})</span>
+        </div>
+        <Reveal as="p" class="subtitle" data-invert>{project.subtitle}</Reveal>
+
+        <div class="pp-images" style={`--n:${n}`}>
+          {sets ? (
+            // one Carousel per set, each with its own progress bar + caption
+            sets.map((s) => <Carousel slides={s.slides} leftLabel={s.label} ext={s.ext} ratio="4 / 5" />)
+          ) : (
+            <>
+              {statics.map((im) => (
+                <Figure image={im.img} alt={im.alt} caption={false} ratio="4 / 5" />
+              ))}
+              <!-- one caption row across the set: label · (1/n) · ext -->
+              <div class="pp-cap mono"><span>{project.gallery.label}</span><span>(1/{n})</span><span>{project.gallery.ext}</span></div>
+            </>
+          )}
+        </div>
+      </section>
+    </div>
+
+    <section class="pd-next edge">
+      <a class="next-link" href={nextHref}>
+        <span class="visually-hidden">Next project: {next.title}</span>
+        <span class="next-word" aria-hidden="true"><GlitchText text="N[e]xt Pr[o]ject" /></span>
+      </a>
+      <ArrowOrbs class="next-orbs" big="up-right" small="down-right" href={nextHref} label={`Next project: ${next.title}`} smallHref={nextHref} />
+    </section>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  /* ---------- hero ---------- */
+  .pd-hero {
+    display: grid;
+    grid-template-columns: 1fr 46%;
+    gap: clamp(1.5rem, 4vw, 4rem);
+    align-items: stretch;
+    padding-top: clamp(1rem, 3vw, 3rem);
+    padding-bottom: clamp(3rem, 7vw, 6rem);
+  }
+  /* lede centred against the image with flex (as on the Projects hero), not
+     absolute: with the shared large circles a tall lede grows the row
+     instead of spilling above the hero into the header */
+  .pd-text { display: flex; flex-direction: column; }
+  .pd-lede { margin-block: auto; }
+  .pd-img { justify-self: end; width: 100%; }
+  /* title row: name + small year on its baseline, same ink (a little larger
+     than the 0.85rem paragraphs) */
+  .pd-title { font-size: 1rem; line-height: 1.2; margin: 0; color: var(--fg); }
+  .pd-year { font-size: 0.7em; margin-left: 0.35em; }
+  .meta { font-size: 0.85rem; margin: 0 0 1.2em; color: var(--muted); }
+  /* one blank line (paragraph line-height: 0.85rem × 1.4) title → meta and
+     meta → first paragraph. Top margins, because the reveal mask forces
+     margin-bottom: -0.2em on each Reveal; with the previous element's 0.2em
+     reveal padding the visible gap comes out at the full value. */
+  .pd-title + .meta { margin-top: calc(0.85rem * 1.4); }
+  .meta + .copy { margin-top: 1.4em; }
+  .meta-gap { display: inline-block; width: 1.5em; }
+  .copy { font-size: 0.85rem; line-height: 1.4; margin: 0 0 1em; max-width: 34rem; color: var(--muted); }
+  /* one blank line (= 1 line-height, 1.4em) between paragraphs. margin-TOP on
+     purpose: the reveal mask (html.js-reveal .reveal-on-scroll) forces
+     margin-bottom: -0.2em on every Reveal, which cancels the margin above.
+     Collapsed with that -0.2em the margin is 1.2em, and the previous
+     paragraph's 0.2em reveal padding brings the visible gap to exactly 1.4em
+     (without JS: max(1em, 1.4em) = 1.4em too). The <br> inside a paragraph is
+     untouched. */
+  .copy + .copy { margin-top: 1.4em; }
+  /* small caption-style detail line (site mono) under the description */
+  .details { margin: 1.2em 0 0; color: var(--muted); }
+  /* same one-line gap above it, measured in the PARAGRAPH text size
+     (0.85rem × 1.4), not the smaller mono size */
+  .copy + .details { margin-top: calc(0.85rem * 1.4); }
+  .orbs-row { margin-top: clamp(1.5rem, 3vw, 2.5rem); }
+  /* bleed room for the circles' hover spread + scale inside the reveal mask
+     (8% of the shared diameter), cancelled by negative margins */
+  :global(html.js-reveal) .orbs-row {
+    --bleed: calc(var(--orb-hero) * 0.08);
+    padding: var(--bleed);
+    margin: calc(clamp(1.5rem, 3vw, 2.5rem) - var(--bleed)) calc(-1 * var(--bleed)) calc(-1 * var(--bleed));
+  }
+
+  /* ---------- panel (Philosophy construction) ---------- */
+  .pd-panel {
+    position: relative;
+    background: var(--bg);
+    color: var(--on-panel);
+    padding-top: clamp(2.5rem, 6vw, 5rem);
+    padding-bottom: clamp(3rem, 7vw, 6rem);
+  }
+  .pd-panel > .pp-bg {
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: var(--panel-h);
+    background: var(--panel);
+    border-radius: clamp(18px, 1.8vw, 30px) clamp(18px, 1.8vw, 30px) 0 0;
+    z-index: 0;
+  }
+  .pd-panel > * { position: relative; z-index: 1; }
+  .pp-head { display: flex; justify-content: space-between; align-items: baseline; gap: 2rem; }
+  .h-display {
+    font-family: var(--ff-display);
+    font-weight: 500; /* display cut ships 500/700 only */
+    font-size: clamp(2.6rem, 7vw, 6rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    margin: 0;
+  }
+  .w-word { position: relative; display: inline-block; padding-bottom: 0.06em; }
+  .w-word::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: max(1px, 0.012em); background: currentColor; }
+  .idx { font-family: var(--ff-display); font-weight: 500; font-size: clamp(1.95rem, 5.25vw, 4.5rem); line-height: 1; }
+  .subtitle { font-size: clamp(1rem, 1.2vw, 1.4rem); margin: clamp(1.2rem, 2.5vw, 2rem) 0 0; }
+
+  .pp-images {
+    display: grid;
+    grid-template-columns: repeat(var(--n, 2), minmax(0, 1fr));
+    gap: clamp(1rem, 2.5vw, 2.2rem);
+    width: 81%;
+    margin-top: clamp(2.5rem, 6vw, 5rem);
+    color: var(--fg); /* caption sits on the page surface below the panel */
+  }
+  .pp-cap {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    margin-top: -0.4rem;
+  }
+  .pp-cap > :last-child { text-align: right; }
+
+  /* ---------- Next project ---------- */
+  .pd-next {
+    /* the text size (also used by the no-text-box fallback offset below) */
+    --next-fs: clamp(2.8rem, 12.5vw, 11rem);
+    position: relative;
+    padding-block: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .next-link { color: inherit; min-width: 0; }
+  .next-word {
+    display: block;
+    font-family: var(--ff-display);
+    font-weight: 500;
+    font-size: var(--next-fs);
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    transition: color 280ms ease;
+  }
+  .next-link:hover .next-word, .next-link:focus-visible .next-word { color: var(--muted); }
+  .next-orbs { flex: none; margin-top: 0.4rem; }
+
+  /* side by side (821px+): centre the pair on the LETTERS, not the line box.
+     The line box is taller than the glyphs (line-height, ascent/descent room
+     for the "j"), so text-box trims it to the first line's cap height → the
+     last line's alphabetic baseline, and the flex row centres on that.
+     Where the text + the shared-size pair don't fit on one line, the text
+     simply wraps at its space ("Next" / "Project") and the pair centres on
+     the whole two-line block ("Project" alone always fits beside the pair). */
+  @media (min-width: 821px) {
+    .pd-next { align-items: center; }
+    .next-word { text-box: trim-both cap alphabetic; }
+    .next-orbs { margin-top: 0; }
+  }
+  /* no text-box support (e.g. Firefox): with line-height 0.9 the letters'
+     centre sits ≈ 0.09 × font size above the line box's centre (for one line
+     or two), so lift the pair by that (relative positioning: no layout
+     change). Approximate — it assumes Helvetica-like metrics. */
+  @supports not (text-box: trim-both cap alphabetic) {
+    @media (min-width: 821px) {
+      .next-orbs { position: relative; top: calc(var(--next-fs) * -0.09); }
+    }
+  }
+  .visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; }
+
+  @media (max-width: 820px) {
+    .pd-hero { grid-template-columns: 1fr; align-items: start; }
+    .pd-img { order: -1; }
+    .pd-lede { margin-block: clamp(1.2rem, 2.5vw, 2rem) 0; }
+    .pd-panel { --panel-h: clamp(18rem, 64vw, 30rem) !important; }
+    .pp-images { grid-template-columns: 1fr; width: 100%; }
+    .pd-next { flex-direction: column; }
+  }
+</style>
