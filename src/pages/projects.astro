@@ -216,6 +216,10 @@ const previews = await Promise.all(
   .preview.is-on { opacity: 1; }
 
   @media (max-width: 820px) {
+    /* no scroll-down circles on mobile: the whole row goes (its margin and
+       hover bleed room too), so the text ends cleanly. Scoped to .pj-lede so
+       it outranks the reveal rule's display: block. */
+    .pj-lede .orbs-row { display: none; }
     .pj-hero { grid-template-columns: 1fr; align-items: start; }
     .pj-img { order: -1; }
     /* stacked: normal flow; text (and the circles, which follow it) at the
@@ -248,6 +252,19 @@ const previews = await Promise.all(
       if (on) shown++;
     });
     if (empty) empty.hidden = shown > 0;
+
+    // then bring the (filtered) list into view: "Recent works" heading near
+    // the top, with a little breathing room (the header isn't fixed, so it
+    // can't cover it). Works with the pinned hero too — the panel is in
+    // normal flow, so its document position is stable. Focus isn't moved,
+    // so it stays on the pressed filter (mouse, Enter or Space alike).
+    const head = document.querySelector<HTMLElement>(".works-head");
+    if (head) {
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const room = parseFloat(getComputedStyle(document.documentElement).fontSize) * 1.5;
+      const top = head.getBoundingClientRect().top + window.scrollY - room;
+      window.scrollTo({ top: Math.max(0, top), behavior: reduce ? "auto" : "smooth" });
+    }
   });
 
   // ---- hover preview: follows the cursor with a slight lag; mouse only ----
