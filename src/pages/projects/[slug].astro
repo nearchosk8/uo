@@ -8,7 +8,7 @@ import Figure from "../../components/Figure.astro";
 import Carousel from "../../components/Carousel.astro";
 import ArrowOrbs from "../../components/ArrowOrbs.astro";
 import GlitchText from "../../components/GlitchText.astro";
-import { projects, nextProject, type Project } from "../../data/projects";
+import { projects, nextProject, paragraphText, type Project } from "../../data/projects";
 
 // one static page per entry in src/data/projects.ts
 export function getStaticPaths() {
@@ -22,7 +22,11 @@ const nextHref = `/projects/${next.slug}`;
 const sets = project.gallery.carousels;
 const statics = project.gallery.images;
 const n = sets ? sets.length : statics.length;
-const metaDescription = project.description[0].replace(/\n/g, " ");
+const metaDescription = paragraphText(project.description[0]);
+// paragraphs: plain text (split at "\n") or text + inline-link pieces
+const paragraphs = project.description.map((d) =>
+  typeof d === "string" ? { lines: d.split("\n"), parts: null } : { lines: null, parts: d }
+);
 // hero title: the display name without the [pixel-glyph] brackets
 const plainName = project.name.replace(/[\[\]]/g, "");
 ---
@@ -39,9 +43,12 @@ const plainName = project.name.replace(/[\[\]]/g, "");
             {project.heroSubtitle && <Reveal as="p" class="pd-subtitle">{project.heroSubtitle}</Reveal>}
             <Reveal as="p" class="meta">— {project.type}<span class="meta-gap" aria-hidden="true"></span>{project.place}</Reveal>
             {project.award && <Reveal as="p" class="award">{project.award}</Reveal>}
-            {project.description.map((d) => (
+            {paragraphs.map((d) => (
               <Reveal as="p" class="copy">
-                {d.split("\n").map((line, i) => <>{i > 0 && <br />}{line}</>)}
+                {d.lines && d.lines.map((line, i) => <>{i > 0 && <br />}{line}</>)}
+                {d.parts && d.parts.map((part) => (
+                  <>{typeof part === "string" ? part : <a class="u-link" href={part.href} target="_blank" rel="noopener">{part.label}</a>}</>
+                ))}
               </Reveal>
             ))}
             {project.detailLines ? (
