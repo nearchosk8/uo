@@ -9,7 +9,7 @@ import Logo from "./Logo.astro";
 <header class="edge uo-header">
   <a href="/" class="wordmark" aria-label="Untitled Office — home"><Logo class="logo" /></a>
 
-  <button id="menu-open" class="dots" aria-label="Open menu" aria-haspopup="true">
+  <button id="menu-open" class="dots" aria-label="Open menu" aria-haspopup="true" data-umami-event="menu_open">
     <span></span><span></span><span></span>
   </button>
 
@@ -166,6 +166,7 @@ import Logo from "./Logo.astro";
 </style>
 
 <script>
+  import { track } from "../scripts/track";
   const root = document.documentElement;
   function save(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
   const modeToggle = document.querySelector("[data-mode-toggle]");
@@ -180,11 +181,13 @@ import Logo from "./Logo.astro";
     const next = root.getAttribute("data-mode") === "dark" ? "light" : "dark";
     root.setAttribute("data-mode", next);
     save("uo-mode", next); sync();
+    track("theme_toggle", { setting: "mode", value: next });
   });
   colorToggle?.addEventListener("click", () => {
     const next = root.getAttribute("data-color") === "orange" ? "grayscale" : "orange";
     root.setAttribute("data-color", next);
     save("uo-color", next); sync();
+    track("theme_toggle", { setting: "color", value: next });
   });
   sync();
 

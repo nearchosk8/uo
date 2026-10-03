@@ -9,6 +9,7 @@ import Carousel from "../../components/Carousel.astro";
 import ArrowOrbs from "../../components/ArrowOrbs.astro";
 import GlitchText from "../../components/GlitchText.astro";
 import { projects, nextProject, paragraphText, type Project } from "../../data/projects";
+import { outbound } from "../../scripts/track";
 
 // one static page per entry in src/data/projects.ts
 export function getStaticPaths() {
@@ -47,7 +48,7 @@ const plainName = project.name.replace(/[\[\]]/g, "");
               <Reveal as="p" class="copy">
                 {d.lines && d.lines.map((line, i) => <>{i > 0 && <br />}{line}</>)}
                 {d.parts && d.parts.map((part) => (
-                  <>{typeof part === "string" ? part : <a class="u-link" href={part.href} target="_blank" rel="noopener">{part.label}</a>}</>
+                  <>{typeof part === "string" ? part : <a class="u-link" href={part.href} target="_blank" rel="noopener" {...outbound(part.href)}>{part.label}</a>}</>
                 ))}
               </Reveal>
             ))}
@@ -59,7 +60,7 @@ const plainName = project.name.replace(/[\[\]]/g, "");
                     {line.map((part) =>
                       typeof part === "string"
                         ? part
-                        : <a class="u-link" href={part.href} target="_blank" rel="noopener">{part.label}</a>
+                        : <a class="u-link" href={part.href} target="_blank" rel="noopener" {...outbound(part.href)}>{part.label}</a>
                     )}
                   </>
                 ))}
@@ -71,7 +72,7 @@ const plainName = project.name.replace(/[\[\]]/g, "");
                   <>
                     {project.details && <br />}
                     {project.links.map((l, i) => (
-                      <>{i > 0 && " | "}<a class="u-link" href={l.href} target="_blank" rel="noopener">{l.label}</a></>
+                      <>{i > 0 && " | "}<a class="u-link" href={l.href} target="_blank" rel="noopener" {...outbound(l.href)}>{l.label}</a></>
                     ))}
                   </>
                 )}
@@ -114,11 +115,11 @@ const plainName = project.name.replace(/[\[\]]/g, "");
     </div>
 
     <section class="pd-next edge">
-      <a class="next-link" href={nextHref}>
+      <a class="next-link" href={nextHref} data-umami-event="next_project" data-umami-event-slug={next.slug}>
         <span class="visually-hidden">Next project: {next.title}</span>
         <span class="next-word" aria-hidden="true"><GlitchText text="N[e]xt Pr[o]ject" /></span>
       </a>
-      <ArrowOrbs class="next-orbs" big="up-right" small="down-right" href={nextHref} label={`Next project: ${next.title}`} smallHref={nextHref} />
+      <ArrowOrbs class="next-orbs" big="up-right" small="down-right" href={nextHref} label={`Next project: ${next.title}`} smallHref={nextHref} track={{ "data-umami-event": "next_project", "data-umami-event-slug": next.slug }} />
     </section>
   </main>
   <Footer />

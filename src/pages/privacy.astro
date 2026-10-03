@@ -1,0 +1,133 @@
+---
+// ⚠️ DRAFT FOR LEGAL REVIEW — not final legal text. Have a lawyer / DPO check
+// it (GDPR + Greek law 4624/2019 + ePrivacy) before relying on it, and fill in
+// the [bracketed] items (GA4 retention, last-updated date).
+import Base from "../layouts/Base.astro";
+import Header from "../components/Header.astro";
+import MenuOverlay from "../components/MenuOverlay.astro";
+import Footer from "../components/Footer.astro";
+---
+<Base title="Privacy & cookie policy — Untitled Office" description="How Untitled Office uses cookies, Google Analytics and contact-form data.">
+  <MenuOverlay />
+  <Header />
+  <main>
+    <article class="pv edge">
+      <h1 class="pv-title">Privacy &amp; cookie policy</h1>
+      <p class="pv-meta mono">Last updated: [date]</p>
+
+      <h2>Who we are</h2>
+      <p>
+        This website is run by Untitled Office, Ippokratous 7, 106 79 Athens, Greece.
+        For anything about your data, email <a class="u-link" href="mailto:info@untitledoffice.gr" data-umami-event="contact_click" data-umami-event-type="email">info@untitledoffice.gr</a>.
+      </p>
+
+      <h2>What we collect, and why</h2>
+      <p>
+        <strong>Analytics (only with your consent).</strong> If you allow analytics cookies, we use
+        Google Analytics 4, loaded through Google Tag Manager, to understand how the site is used:
+        pages visited, time on page, how you arrived (for example a search or a link), device and
+        browser type, and approximate location (country and city). Google Analytics 4 does not store
+        IP addresses. We don’t use this data for advertising and don’t combine it with other data.
+        It is kept for [14 months — set in our GA4 account].
+      </p>
+      <p>
+        Without your consent, Google Tag Manager still loads, but analytics cookies are not set.
+        Google may receive limited, cookieless signals (Consent Mode) that cannot identify you.
+      </p>
+      <p>
+        <strong>Cookieless statistics (no consent needed).</strong> For basic visitor numbers we also
+        use Umami Cloud, which runs for every visitor. It sets no cookies and stores nothing on your
+        device. It collects anonymous, aggregated usage data only (pages viewed, referring site,
+        browser, device type and country) and some interactions, such as which project or link was
+        clicked, never anything you type or your contact details. It can’t identify you, isn’t used for
+        profiling and isn’t combined with other data. We rely on our legitimate interest in
+        understanding, at an aggregate level, how the site is used (GDPR Art. 6(1)(f)).
+      </p>
+      <p>
+        <strong>Contact form.</strong> When you send the contact form, we receive the details you
+        enter (name, telephone, e-mail, website, budget and your message). The form is handled by
+        Netlify Forms, our hosting provider, which stores the submission and forwards it to us. We
+        use it only to reply to your enquiry and keep it for as long as needed for that
+        [and any follow-up work].
+      </p>
+
+      <h2>Cookies</h2>
+      <div class="pv-table-wrap">
+        <table class="pv-table">
+          <thead>
+            <tr><th>Cookie</th><th>Purpose</th><th>Duration</th><th>Type</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>cc_cookie</code></td><td>Remembers your cookie choice</td><td>6 months</td><td>Necessary</td></tr>
+            <tr><td><code>_ga</code></td><td>Tells visits apart (Google Analytics)</td><td>2 years</td><td>Analytics, with consent</td></tr>
+            <tr><td><code>_ga_&lt;ID&gt;</code></td><td>Keeps session state (Google Analytics)</td><td>2 years</td><td>Analytics, with consent</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>We also remember your light/dark and colour choice in your browser’s local storage; this is not sent to us.</p>
+
+      <h2>Legal basis</h2>
+      <p>
+        Analytics cookies are used only with your consent (GDPR Art. 6(1)(a) and the ePrivacy rules).
+        The consent cookie is strictly necessary to remember your choice. Umami’s cookieless,
+        anonymous statistics are based on our legitimate interest (GDPR Art. 6(1)(f)). Contact-form data is used
+        to answer your request (GDPR Art. 6(1)(b)).
+      </p>
+
+      <h2>Changing your mind</h2>
+      <p>
+        You can change or withdraw consent at any time:
+        <button type="button" class="pv-btn u-link" data-cc-settings>open cookie settings</button>
+        (also linked in the footer). If you switch analytics off, we remove the Google Analytics cookies.
+      </p>
+
+      <h2>Who else processes data</h2>
+      <p>
+        Google (Google Analytics, Google Tag Manager), Umami Software (Umami Cloud statistics) and
+        Netlify (hosting and forms) process data on our behalf. Some of this may happen outside the EU, under the safeguards these providers
+        offer (such as the EU–US Data Privacy Framework and standard contractual clauses).
+      </p>
+
+      <h2>Your rights</h2>
+      <p>
+        You can ask us for access to, correction or deletion of your data, or object to or restrict
+        its use, by emailing <a class="u-link" href="mailto:info@untitledoffice.gr" data-umami-event="contact_click" data-umami-event-type="email">info@untitledoffice.gr</a>.
+        You can also complain to the Hellenic Data Protection Authority (dpa.gr).
+      </p>
+    </article>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .pv {
+    max-width: calc(44rem + 2 * var(--edge));
+    padding-top: clamp(1rem, 3vw, 3rem);
+    padding-bottom: clamp(3rem, 7vw, 6rem);
+  }
+  .pv-title {
+    font-family: var(--ff-display);
+    font-weight: 500;
+    font-size: clamp(2.2rem, 5vw, 4rem);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin: 0;
+  }
+  .pv-meta { color: var(--muted); margin: 1rem 0 0; }
+  .pv h2 {
+    font-family: var(--ff-display);
+    font-weight: 500;
+    font-size: clamp(1.15rem, 1.6vw, 1.5rem);
+    letter-spacing: -0.01em;
+    margin: clamp(2rem, 4vw, 3rem) 0 0.6rem;
+  }
+  .pv p { font-size: 1rem; line-height: 1.5; margin: 0 0 1em; }
+  .pv strong { font-weight: 500; }
+  .pv-table-wrap { overflow-x: auto; margin: 0 0 1em; }
+  .pv-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  .pv-table th,
+  .pv-table td { text-align: left; padding: 0.55rem 1rem 0.55rem 0; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+  .pv-table th { font-weight: 500; }
+  .pv-table code { font-family: var(--ff-mono); font-size: 0.85em; }
+  .pv-btn { background: none; border: 0; padding: 0; font: inherit; color: inherit; cursor: pointer; }
+</style>

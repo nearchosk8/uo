@@ -1,6 +1,8 @@
 ---
 import "../styles/global.css";
 import CustomCursor from "../components/CustomCursor.astro";
+import { CONSENT_COOKIE, CONSENT_REVISION } from "../scripts/consent-config";
+const GTM_ID = "GTM-TFFPDRTG";
 const { title = "Untitled Office — Design Office, Athens", description = "Untitled Office is a design office based in Athens, Greece, known for a systematic approach to design-driven projects across Brand, Print, Screen and Space." } = Astro.props;
 ---
 
@@ -9,6 +11,43 @@ const { title = "Untitled Office — Design Office, Athens", description = "Unti
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Google Consent Mode v2 (advanced): defaults first, before GTM. GTM
+         always loads; the consent state decides what its tags may store.
+         A choice stored by the cookie banner (current revision only) is
+         re-applied right away, so returning visitors don't start as denied. -->
+    <script is:inline define:vars={{ consentCookie: CONSENT_COOKIE, consentRevision: CONSENT_REVISION }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      window.gtag = gtag;
+      gtag("consent", "default", {
+        ad_storage: "denied",
+        ad_user_data: "denied",
+        ad_personalization: "denied",
+        analytics_storage: "denied",
+        functionality_storage: "granted",
+        security_storage: "granted",
+        wait_for_update: 500
+      });
+      gtag("set", "ads_data_redaction", true);
+      try {
+        var m = document.cookie.match(new RegExp("(?:^|; )" + consentCookie + "=([^;]*)"));
+        var v = m && JSON.parse(decodeURIComponent(m[1]));
+        if (v && v.revision === consentRevision && Array.isArray(v.categories)) {
+          gtag("consent", "update", {
+            analytics_storage: v.categories.indexOf("analytics") > -1 ? "granted" : "denied"
+          });
+        }
+      } catch (e) {}
+    </script>
+    <!-- Google Tag Manager -->
+    <script is:inline define:vars={{ gtmId: GTM_ID }}>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer',gtmId);
+    </script>
+    <!-- End Google Tag Manager -->
+    <!-- Umami Cloud: cookieless, anonymous analytics for every visitor. Not tied
+         to the cookie banner or Consent Mode (stores nothing on the device).
+         data-domains = only count the live site (not localhost / Netlify previews). -->
+    <script is:inline defer src="https://cloud.umami.is/script.js" data-website-id="59d445dd-1880-4e05-9726-6311e4cebbd4" data-domains="untitledoffice.gr,www.untitledoffice.gr"></script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="description" content={description} />
     <title>{title}</title>
@@ -35,10 +74,28 @@ const { title = "Untitled Office — Design Office, Athens", description = "Unti
     </script>
   </head>
   <body>
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`} height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
     <CustomCursor />
     <slot />
   </body>
 </html>
+
+<script>
+  // Cookie banner, loaded on demand: on a first visit (no valid stored choice)
+  // or when a [data-cc-settings] control ("Cookie settings") is clicked.
+  // Returning visitors with a valid choice never download the banner code.
+  import { readStoredConsent } from "../scripts/consent-config";
+  const loadConsent = () => import("../scripts/consent");
+  if (!readStoredConsent()) loadConsent().then((m) => m.startConsent());
+  document.addEventListener("click", (e) => {
+    const t = e.target instanceof Element ? e.target.closest("[data-cc-settings]") : null;
+    if (!t) return;
+    e.preventDefault();
+    loadConsent().then(async (m) => { await m.startConsent(); m.showPreferences(); });
+  });
+</script>
 
 <script>
   // Masked slide-up reveal on first scroll into view (mirrors the burger nav).

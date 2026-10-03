@@ -17,10 +17,10 @@ const MAPS_URL = "https://www.google.com/maps/search/?api=1&query=Ippokratous+7,
   <main>
     <section class="ct-top edge">
       <Reveal as="p" class="ct-block">
-        <a class="ct-line u-link" href="tel:+302114061673"><span class="ct-l1">Get in touch</span><span class="ct-l2">(+30) 211 406 1673</span></a>
+        <a class="ct-line u-link" href="tel:+302114061673" data-umami-event="contact_click" data-umami-event-type="phone"><span class="ct-l1">Get in touch</span><span class="ct-l2">(+30) 211 406 1673</span></a>
       </Reveal>
       <Reveal as="p" class="ct-block">
-        <a class="ct-line u-link" href={MAPS_URL} target="_blank" rel="noopener noreferrer"><span class="ct-l1">Ippokratous 7</span><span class="ct-l2">106—79 Ath (Gr)</span></a>
+        <a class="ct-line u-link" href={MAPS_URL} target="_blank" rel="noopener noreferrer" data-umami-event="outbound_click" data-umami-event-label="google_maps"><span class="ct-l1">Ippokratous 7</span><span class="ct-l2">106—79 Ath (Gr)</span></a>
       </Reveal>
     </section>
 
@@ -69,7 +69,7 @@ const MAPS_URL = "https://www.google.com/maps/search/?api=1&query=Ippokratous+7,
       <div class="map-frame" data-map-frame>
         <div class="map-fallback" data-map-fallback>
           <p class="map-addr">Ippokratous 7<br />106 79 Athens (Gr)</p>
-          <a class="u-link mono" href={MAPS_URL} target="_blank" rel="noopener noreferrer">Open in Google Maps</a>
+          <a class="u-link mono" href={MAPS_URL} target="_blank" rel="noopener noreferrer" data-umami-event="outbound_click" data-umami-event-label="google_maps">Open in Google Maps</a>
         </div>
         <div class="map-live" data-map-live></div>
       </div>
@@ -246,6 +246,7 @@ const MAPS_URL = "https://www.google.com/maps/search/?api=1&query=Ippokratous+7,
 </style>
 
 <script>
+  import { track } from "../scripts/track";
   // Post in place (Netlify Forms accepts a urlencoded POST to any path) and show
   // the thank-you; on any failure fall back to the native submit (→ ?sent=1).
   const form = document.querySelector("[data-contact-form]");
@@ -254,7 +255,18 @@ const MAPS_URL = "https://www.google.com/maps/search/?api=1&query=Ippokratous+7,
     if (form instanceof HTMLElement) form.hidden = true;
     if (ok instanceof HTMLElement) ok.hidden = false;
   }
-  if (new URLSearchParams(location.search).get("sent") === "1") showOk();
+  if (new URLSearchParams(location.search).get("sent") === "1") {
+    showOk();
+    // the fallback (native POST) landed here after a successful send: count it
+    // once Umami has loaded, then drop ?sent=1 so a reload can't count it again
+    const t = setInterval(() => {
+      if (!window.umami) return;
+      clearInterval(t);
+      track("contact_form_submit");
+      history.replaceState(null, "", location.pathname);
+    }, 200);
+    setTimeout(() => clearInterval(t), 8000);
+  }
 
   if (form instanceof HTMLFormElement) {
     form.addEventListener("submit", async (e) => {
@@ -270,6 +282,7 @@ const MAPS_URL = "https://www.google.com/maps/search/?api=1&query=Ippokratous+7,
         });
         if (!res.ok) throw new Error(String(res.status));
         showOk();
+        track("contact_form_submit"); // success only; no form data is sent
       } catch (err) {
         if (btn instanceof HTMLButtonElement) btn.disabled = false;
         form.submit();

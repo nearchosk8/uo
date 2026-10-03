@@ -26,14 +26,16 @@ const {
   href,
   label,
   smallHref,
+  // optional analytics attributes (data-umami-*) for the circles that are links
+  track = {},
   class: className,
 } = Astro.props;
 const ROT: Record<string, number> = { right: 0, down: 90, "up-right": -45, "down-right": 45 };
 const GLYPH = "M437.31,40.61c-219.09,0-396.7,177.61-396.69,396.7,0,219.09,177.61,396.7,396.7,396.69,219.1,0,396.7-177.61,396.7-396.7,0-219.1-177.61-396.7-396.7-396.7M683.96,405.08v64.45s0,.19,0,.19c0,0-.02,0-.04,0h0s-.58,0-.58,0c-76.65,21.66-128.41,79.02-128.41,168.01,0,18.35,2.2,35.45,6.43,51.02h-55.67c-2.96-16.16-4.57-33.17-4.57-51.02,0-69.54,23.85-126.8,64.37-168.01H190.66s0-62.1,0-62.1h377.69c-.93-.92-1.92-1.78-2.84-2.72-40.52-41.2-64.37-98.47-64.37-168.02,0-17.85,1.6-34.86,4.57-51.02h55.67c-4.23,15.57-6.43,32.66-6.43,51.02,0,89,51.77,146.36,128.43,168.02.07.04.17.06.26.08.11-.03.22-.06.33-.09v.19Z";
 const BigTag = href ? "a" : "span";
-const bigAttrs = href ? { href, "aria-label": label } : { "aria-hidden": "true" };
+const bigAttrs = href ? { href, "aria-label": label, ...track } : { "aria-hidden": "true" };
 const SmallTag = smallHref ? "a" : "span";
-const smallAttrs = smallHref ? { href: smallHref, tabindex: "-1", "aria-hidden": "true" } : { "aria-hidden": "true" };
+const smallAttrs = smallHref ? { href: smallHref, tabindex: "-1", "aria-hidden": "true", ...track } : { "aria-hidden": "true" };
 ---
 <span class:list={["orbs", className]} style={[size && `--orb:${size}`, gap && `--orb-gap:${gap}`].filter(Boolean).join("; ") || undefined}>
   <BigTag class="orb orb--big" style={`--rot:${ROT[big] ?? 90}deg`} {...bigAttrs}>

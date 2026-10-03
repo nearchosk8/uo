@@ -22,19 +22,21 @@ import Reveal from "./Reveal.astro";
       </div>
 
       <div class="socials">
-        <a class="social" href="https://www.instagram.com/untitled_office/" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><SocialIcon name="instagram" /></a>
-        <a class="social" href="https://www.linkedin.com/in/alexandros-dimopoulos-58b5b9194/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><SocialIcon name="linkedin" /></a>
-        <a class="social" href="https://www.behance.net/alexandrosdimopoulos" target="_blank" rel="noopener noreferrer" aria-label="Behance"><SocialIcon name="behance" /></a>
+        <a class="social" href="https://www.instagram.com/untitled_office/" target="_blank" rel="noopener noreferrer" data-umami-event="outbound_click" data-umami-event-label="instagram" aria-label="Instagram"><SocialIcon name="instagram" /></a>
+        <a class="social" href="https://www.linkedin.com/in/alexandros-dimopoulos-58b5b9194/" target="_blank" rel="noopener noreferrer" data-umami-event="outbound_click" data-umami-event-label="linkedin" aria-label="LinkedIn"><SocialIcon name="linkedin" /></a>
+        <a class="social" href="https://www.behance.net/alexandrosdimopoulos" target="_blank" rel="noopener noreferrer" data-umami-event="outbound_click" data-umami-event-label="behance" aria-label="Behance"><SocialIcon name="behance" /></a>
       </div>
     </div>
 
     <div class="reveal-on-scroll">
       <div class="reveal-inner">
         <div class="foot-details">
-          <div><span class="d-label">New journey</span><a class="d-val" href="mailto:hello@untitledoffice.gr">hello@untitledoffice.gr</a></div>
+          <div><span class="d-label">New journey</span><a class="d-val" href="mailto:hello@untitledoffice.gr" data-umami-event="contact_click" data-umami-event-type="email">hello@untitledoffice.gr</a></div>
           <div><span class="d-label">Phone:</span><span class="d-val">(+30) 211 406 1673 | (+30) 6972737996</span></div>
-          <div><span class="d-label">Contact</span><a class="d-val" href="mailto:info@untitledoffice.gr">info@untitledoffice.gr</a></div>
+          <div><span class="d-label">Contact</span><a class="d-val" href="mailto:info@untitledoffice.gr" data-umami-event="contact_click" data-umami-event-type="email">info@untitledoffice.gr</a></div>
           <div><span class="d-label">Ath (Gr)</span><span class="d-val">Ippokratous 7, 106 79</span></div>
+          <!-- "Cookie settings" reopens the consent preferences (handled in Base.astro) -->
+          <div><span class="d-label">Privacy</span><span class="d-val"><a href="/privacy">Privacy policy</a> | <button type="button" class="d-btn" data-cc-settings>Cookie settings</button></span></div>
         </div>
       </div>
     </div>
@@ -171,6 +173,13 @@ import Reveal from "./Reveal.astro";
   .foot-details > div { display: grid; }
   .d-label { font-size: 0.85rem; }
   .d-val { font-size: 0.85rem; color: var(--muted); }
+  /* button that reads like the other small footer links */
+  .d-btn {
+    background: none; border: 0; padding: 0; margin: 0;
+    font: inherit; letter-spacing: inherit; color: inherit;
+    cursor: pointer; text-align: left;
+  }
+  .d-btn:focus-visible { outline: 1px solid currentColor; outline-offset: 2px; }
 
   .rule { border: 0; border-top: 1px solid var(--on-panel); margin: clamp(1.5rem, 3vw, 2.5rem) 0 0; opacity: 0.8; }
   /* Logo SVG fills the panel width edge-to-edge; height follows its aspect ratio.

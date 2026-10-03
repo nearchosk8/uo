@@ -38,9 +38,9 @@ const previews = await Promise.all(
         <div class="pj-text">
           <!-- filters: works list only (hero stays); ALL active by default -->
           <div class="filters mono" role="group" aria-label="Filter projects by category" data-filters>
-            <button type="button" class="filter is-active" data-filter="all" aria-pressed="true">All</button>
+            <button type="button" class="filter is-active" data-filter="all" aria-pressed="true" data-umami-event="project_filter" data-umami-event-category="all">All</button>
             {visibleCategories.map((c) => (
-              <button type="button" class="filter" data-filter={c} aria-pressed="false">{c}</button>
+              <button type="button" class="filter" data-filter={c} aria-pressed="false" data-umami-event="project_filter" data-umami-event-category={c.toLowerCase()}>{c}</button>
             ))}
           </div>
 
@@ -77,7 +77,7 @@ const previews = await Promise.all(
 
           <div class="rows" data-works>
             {projects.map((p, i) => (
-              <Reveal as="a" class="row" href={`/projects/${p.slug}`} data-category={p.category} data-preview={previews[i]}>
+              <Reveal as="a" class="row" href={`/projects/${p.slug}`} data-category={p.category} data-preview={previews[i]} data-umami-event="project_open" data-umami-event-slug={p.slug}>
                 <span class="row-in">
                   <span class="row-title">{p.title}</span>
                   <span class="row-idx mono">({i + 1})</span>
