@@ -6,7 +6,7 @@ import * as CookieConsent from "vanilla-cookieconsent";
 // would be linked on every page by Astro, even for returning visitors). The
 // site's overrides in global.css (#cc-main vars) win regardless of order.
 import ccCss from "vanilla-cookieconsent/dist/cookieconsent.css?inline";
-import { CONSENT_COOKIE, CONSENT_REVISION, CONSENT_DAYS } from "./consent-config";
+import { CONSENT_COOKIE, CONSENT_REVISION, CONSENT_DAYS, DISMISS_KEY, bannerDismissed } from "./consent-config";
 
 type Gtag = (...args: unknown[]) => void;
 declare global {
@@ -43,6 +43,26 @@ function applyConsent() {
   if (!analytics) clearGaCookies();
 }
 
+// the attached X icon (viewBox + path copied exactly), recoloured via currentColor
+const X_ICON = '<svg viewBox="0 0 1080 1080" aria-hidden="true" focusable="false"><path fill="currentColor" d="M306.71,268.79h-154.98V113.81h154.98v154.98ZM151.73,811.21h154.98v154.98h-154.98v-154.98ZM461.69,268.79v154.98h-154.98v-154.98h154.98ZM461.69,656.23v154.98h-154.98v-154.98h154.98ZM618.31,656.23h-156.62v-232.47h156.62v232.47ZM773.29,268.79v154.98h-154.98v-154.98h154.98ZM773.29,656.23v154.98h-154.98v-154.98h154.98ZM773.29,113.81h154.98v154.98h-154.98V113.81ZM928.27,966.19h-154.98v-154.98h154.98v154.98Z"/></svg>';
+
+/** X on the banner: closes it WITHOUT a choice. Nothing is stored in the
+ *  consent cookie and Consent Mode stays at its defaults (denied); only a
+ *  session flag keeps it from popping up again until the next visit. */
+function addCloseButton(modal: HTMLElement) {
+  if (modal.querySelector(".uo-cc-close")) return;
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "uo-cc-close";
+  btn.setAttribute("aria-label", "Close");
+  btn.innerHTML = X_ICON;
+  btn.addEventListener("click", () => {
+    try { sessionStorage.setItem(DISMISS_KEY, "1"); } catch { /* storage off: just hide */ }
+    CookieConsent.hide();
+  });
+  modal.appendChild(btn);
+}
+
 let started: Promise<void> | null = null;
 
 /** Start the banner once (it shows itself only when there's no valid choice). */
@@ -55,9 +75,13 @@ export function startConsent(): Promise<void> {
     revision: CONSENT_REVISION,
     cookie: { name: CONSENT_COOKIE, expiresAfterDays: CONSENT_DAYS },
     disablePageInteraction: false, // a small panel, not a wall
+    // closed with the X earlier this session → don't pop up on its own (the
+    // footer "Cookie settings" still opens the preferences)
+    autoShow: !bannerDismissed(),
+    onModalReady: ({ modalName, modal }) => { if (modalName === "consentModal") addCloseButton(modal); },
     guiOptions: {
-      // full-width bar at the bottom (text left, buttons right); restyled in global.css
-      consentModal: { layout: "bar inline", position: "bottom", equalWeightButtons: true, flipButtons: false },
+      // small floating panel, bottom right (restyled in global.css)
+      consentModal: { layout: "box", position: "bottom right", equalWeightButtons: true, flipButtons: false },
       preferencesModal: { layout: "box", equalWeightButtons: true, flipButtons: false },
     },
     categories: {

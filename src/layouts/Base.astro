@@ -86,9 +86,11 @@ const { title = "Untitled Office — Design Office, Athens", description = "Unti
   // Cookie banner, loaded on demand: on a first visit (no valid stored choice)
   // or when a [data-cc-settings] control ("Cookie settings") is clicked.
   // Returning visitors with a valid choice never download the banner code.
-  import { readStoredConsent } from "../scripts/consent-config";
+  import { readStoredConsent, bannerDismissed } from "../scripts/consent-config";
   const loadConsent = () => import("../scripts/consent");
-  if (!readStoredConsent()) loadConsent().then((m) => m.startConsent());
+  // no valid choice yet → show the banner, unless it was closed with the X
+  // earlier in this session (then it waits for the next visit)
+  if (!readStoredConsent() && !bannerDismissed()) loadConsent().then((m) => m.startConsent());
   document.addEventListener("click", (e) => {
     const t = e.target instanceof Element ? e.target.closest("[data-cc-settings]") : null;
     if (!t) return;

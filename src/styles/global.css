@@ -313,13 +313,17 @@ html.has-custom-cursor * { cursor: none; }
    COOKIE BANNER (vanilla-cookieconsent v3) — themed via the library's own
    CSS variables, set on its root (#cc-main) so they beat its :root defaults.
    Colours follow the theme tokens (light / dark / orange). z-index sits above
-   the page and header (30) but below the menu overlay (50).
+   the page and header (30) but below the menu overlay (50). No overlay: the
+   page stays usable behind it.
    ============================================================ */
 #cc-main {
   --cc-font-family: var(--ff-sans);
   --cc-z-index: 40;
   --cc-modal-border-radius: clamp(18px, 1.8vw, 30px);
-  --cc-btn-border-radius: 999px;
+  /* the library uses this for buttons AND the preference section boxes, so it
+     must stay a moderate, fixed radius (a 999px pill turns tall boxes into
+     ovals that clip their content); the buttons get their pill shape below */
+  --cc-btn-border-radius: clamp(14px, 1.4vw, 20px);
   --cc-modal-margin: var(--edge);
 
   --cc-bg: var(--bg);
@@ -329,14 +333,14 @@ html.has-custom-cursor * { cursor: none; }
   --cc-separator-border-color: var(--hairline);
   --cc-overlay-bg: color-mix(in srgb, var(--fg) 35%, transparent);
 
-  /* Accept all + Reject all: identical solid ink (equal weight) */
-  --cc-btn-primary-bg: var(--fg);
-  --cc-btn-primary-color: var(--bg);
+  /* every button is the same outlined pill (Accept = Reject = Preferences),
+     filling with ink on hover */
+  --cc-btn-primary-bg: transparent;
+  --cc-btn-primary-color: var(--fg);
   --cc-btn-primary-border-color: var(--fg);
-  --cc-btn-primary-hover-bg: color-mix(in srgb, var(--fg) 80%, var(--bg));
+  --cc-btn-primary-hover-bg: var(--fg);
   --cc-btn-primary-hover-color: var(--bg);
-  --cc-btn-primary-hover-border-color: color-mix(in srgb, var(--fg) 80%, var(--bg));
-  /* Preferences / Save: outlined */
+  --cc-btn-primary-hover-border-color: var(--fg);
   --cc-btn-secondary-bg: transparent;
   --cc-btn-secondary-color: var(--fg);
   --cc-btn-secondary-border-color: var(--fg);
@@ -367,86 +371,137 @@ html.has-custom-cursor * { cursor: none; }
   --cc-webkit-scrollbar-bg: var(--hairline);
   --cc-webkit-scrollbar-hover-bg: var(--muted);
 }
-/* a visible frame on the matching page colour (panel shadow alone can vanish) */
+/* soft shadow + a hairline (the shadow alone vanishes on dark backgrounds) */
 #cc-main .cm,
-#cc-main .pm { border: 1px solid var(--hairline); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18); }
-#cc-main a { text-decoration: underline; text-underline-offset: 0.14em; }
+#cc-main .pm { border: 1px solid var(--hairline); box-shadow: 0 12px 36px rgba(0, 0, 0, 0.14); }
+#cc-main .pm a { text-decoration: underline; text-underline-offset: 0.14em; }
 
-/* ---- consent BAR: prominent, readable, still not a wall (no overlay) ---- */
-#cc-main .cm.cm--bar.cm--inline .cm__body { max-width: none; }
-#cc-main .cm.cm--bar.cm--inline .cm__title {
-  font-family: var(--ff-display);
-  font-weight: 500;
-  font-size: clamp(1.15rem, 1.5vw, 1.6rem);   /* ≥ the site's paragraph size */
-  letter-spacing: -0.01em;
-  color: var(--fg);
-}
-#cc-main .cm.cm--bar.cm--inline .cm__desc {
-  font-size: clamp(0.95rem, 1.05vw, 1.15rem); /* up from the library's .9em */
-  line-height: 1.45;
-  color: var(--fg);
-}
-/* Accept all / Reject all / Preferences: same size for all three; Accept and
-   Reject share the primary style (equalWeightButtons), Preferences is outlined */
-#cc-main .cm.cm--bar.cm--inline .cm__btn {
-  font-size: clamp(0.95rem, 1vw, 1.05rem);
-  font-weight: 500;
-  min-height: 3rem;
-  padding: 0.8em 1.8em;
-}
-/* desktop (821px+): inset bar with the panels' radius; text left, buttons in
-   one row on the right */
-@media (min-width: 821px) {
-  #cc-main .cm.cm--bar.cm--inline {
-    left: var(--edge);
-    right: var(--edge);
-    bottom: var(--edge);
-    width: auto;
-    border-radius: clamp(18px, 1.8vw, 30px);
-  }
-  #cc-main .cm.cm--bar.cm--inline .cm__body {
-    flex-direction: row;
-    align-items: center;
-    gap: clamp(1.5rem, 3vw, 3rem);
-    padding: clamp(1.25rem, 2vw, 2rem) clamp(1.5rem, 2.5vw, 2.5rem);
-  }
-  #cc-main .cm.cm--bar.cm--inline .cm__texts { padding: 0; }
-  #cc-main .cm.cm--bar.cm--inline .cm__title,
-  #cc-main .cm.cm--bar.cm--inline .cm__desc { padding-left: 0; padding-right: 0; }
-  #cc-main .cm.cm--bar.cm--inline .cm__desc { padding-bottom: 0; max-height: none; }
-  #cc-main .cm.cm--bar.cm--inline .cm__title + .cm__desc { margin-top: 0.5em; }
-  #cc-main .cm.cm--bar.cm--inline .cm__btns {
-    flex: none;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.6rem;
-    max-width: none;
-    padding: 0;
-    border: 0;
-  }
-  #cc-main .cm.cm--bar.cm--inline .cm__btn-group { grid-auto-flow: column; gap: 0.6rem; }
-  #cc-main .cm.cm--bar.cm--inline .cm__btn-group + .cm__btn-group,
-  #cc-main .cm.cm--bar.cm--inline .cm__btn + .cm__btn { margin: 0; }
-}
-/* tablet (641–820px, where the library still uses its row layout): text on
-   top, the three buttons in a full-width row underneath */
-@media (min-width: 641px) and (max-width: 820px) {
-  #cc-main .cm.cm--bar.cm--inline { border-radius: clamp(18px, 1.8vw, 30px) clamp(18px, 1.8vw, 30px) 0 0; }
-  #cc-main .cm.cm--bar.cm--inline .cm__body { flex-direction: column; padding: 0; }
-  #cc-main .cm.cm--bar.cm--inline .cm__btns {
-    flex-direction: row;
-    max-width: none;
-    gap: 0.5rem;
-    border-left: 0;
-    border-top: 1px solid var(--cc-separator-border-color);
-  }
-  #cc-main .cm.cm--bar.cm--inline .cm__btn-group { flex: 2; grid-auto-flow: column; gap: 0.5rem; }
-  #cc-main .cm.cm--bar.cm--inline .cm__btn-group + .cm__btn-group { flex: 1; margin: 0; }
-  #cc-main .cm.cm--bar.cm--inline .cm__btn + .cm__btn { margin: 0; }
-}
-/* mobile (≤640px): the library's full-width stacked layout; just round the
-   top corners and give the text room */
+/* ---- preferences panel ---- */
+/* buttons stay pills; the panel's close button stays a circle */
+#cc-main .cm__btn,
+#cc-main .pm__btn { border-radius: 999px; }
+#cc-main .pm__close-btn { border-radius: 50%; }
+/* section content: inner padding ≥ the corner radius, and the cookie table
+   scrolls inside its box if it can't fit, instead of being clipped */
+#cc-main .pm__section--toggle .pm__section-desc { padding: 1em max(1.25rem, var(--cc-btn-border-radius)); }
+#cc-main .pm__section--toggle .pm__section-desc-wrapper { overflow-x: auto; }
+#cc-main .pm__section-table { overflow: visible; }
+#cc-main .pm__table-th,
+#cc-main .pm__table-td { padding: 0.625em 0.75em; }
+#cc-main .pm__table-th:first-child,
+#cc-main .pm__table-td:first-child { padding-left: max(1.25rem, var(--cc-btn-border-radius)); white-space: nowrap; }
+#cc-main .pm__table-th:last-child,
+#cc-main .pm__table-td:last-child { padding-right: max(1.25rem, var(--cc-btn-border-radius)); white-space: nowrap; }
+#cc-main .pm__section:not(.pm__section--toggle):not(:first-child) { padding: 1em max(1.25rem, var(--cc-btn-border-radius)); }
+/* narrow screens: the library stacks the table into label/value rows, so
+   give every row the same inner padding and let values wrap */
 @media (max-width: 640px) {
-  #cc-main .cm.cm--bar.cm--inline { border-radius: clamp(18px, 1.8vw, 30px) clamp(18px, 1.8vw, 30px) 0 0; }
-  #cc-main .cm.cm--bar.cm--inline .cm__texts { padding-top: 1.25rem; }
+  #cc-main .pm__table-td,
+  #cc-main .pm__table-td:first-child,
+  #cc-main .pm__table-td:last-child {
+    padding-left: max(1.25rem, var(--cc-btn-border-radius));
+    padding-right: max(1.25rem, var(--cc-btn-border-radius));
+    white-space: normal;
+  }
+}
+
+/* ---- consent panel (comp): small floating box, bottom right ---- */
+#cc-main .cm.cm--box {
+  --cc-pad: clamp(1.1rem, 1.6vw, 1.6rem);
+  width: clamp(22rem, 33.34vw, 36rem); /* ≈ 480px at 1440px wide */
+  max-width: calc(100vw - 2 * var(--edge));
+}
+#cc-main .cm.cm--box .cm__body { padding: 0; }
+#cc-main .cm.cm--box .cm__texts { padding: var(--cc-pad) var(--cc-pad) 0; }
+#cc-main .cm.cm--box .cm__title {
+  padding: 0 2.5rem 0 0; /* clear the X */
+  font-family: var(--ff-display);
+  font-weight: 500; /* the display cut's lightest (500/700 only) */
+  font-size: clamp(1.8rem, 2.5vw, 2.8rem); /* ≈ 36px at 1440px */
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+}
+#cc-main .cm.cm--box .cm__title + .cm__desc { margin-top: 0.9rem; }
+#cc-main .cm.cm--box .cm__desc {
+  padding: 0;
+  font-size: clamp(0.85rem, 0.95vw, 1rem);
+  line-height: 1.15; /* tightly set */
+  color: var(--fg);
+  max-height: none;
+}
+#cc-main .cm.cm--box .cm__desc a { font-weight: 700; text-decoration: none; }
+#cc-main .cm.cm--box .cm__desc a:hover,
+#cc-main .cm.cm--box .cm__desc a:focus-visible { text-decoration: underline; text-underline-offset: 0.14em; }
+/* buttons: one left-aligned row at the bottom, well below the text */
+#cc-main .cm.cm--box .cm__btns {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 0.3rem;
+  border-top: 0;
+  padding: clamp(2rem, 5.5vw, 5.5rem) var(--cc-pad) var(--cc-pad);
+}
+#cc-main .cm.cm--box .cm__btn-group { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+#cc-main .cm.cm--box .cm__btn-group + .cm__btn-group,
+#cc-main .cm.cm--box .cm__btn + .cm__btn { margin: 0; }
+#cc-main .cm.cm--box .cm__btn {
+  flex: none;
+  min-width: 0;
+  padding: 0.45em 1.7em;
+  font-size: clamp(0.85rem, 0.95vw, 1rem);
+  font-weight: 400;
+  line-height: 1.2;
+}
+#cc-main .cm.cm--box .cm__btn:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+
+/* the X (added by consent.ts): small pixel icon, 44×44 hit area */
+#cc-main .uo-cc-close {
+  position: absolute;
+  top: calc(var(--cc-pad) - 0.75rem);
+  right: calc(var(--cc-pad) - 0.75rem);
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  background: none;
+  border: 0;
+  border-radius: 50%;
+  color: var(--fg);
+  cursor: pointer;
+  transition: opacity 180ms ease;
+}
+#cc-main .uo-cc-close svg { width: 18px; height: 18px; display: block; }
+#cc-main .uo-cc-close:hover { opacity: 0.6; }
+#cc-main .uo-cc-close:focus-visible { outline: 2px solid var(--fg); outline-offset: -4px; }
+
+/* mobile (below 821px): full width at the bottom, rounded top corners;
+   buttons in a row when they fit, otherwise they wrap/stack. !important to
+   beat the library's own ≤640px rules (which force a column). */
+@media (max-width: 820px) {
+  #cc-main .cm.cm--box {
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    margin: 0 !important;
+    width: auto !important;
+    max-width: none !important;
+    border-radius: clamp(18px, 1.8vw, 30px) clamp(18px, 1.8vw, 30px) 0 0;
+    border-bottom: 0;
+  }
+  #cc-main .cm.cm--box .cm__texts { padding: var(--cc-pad) var(--cc-pad) 0 !important; }
+  #cc-main .cm.cm--box .cm__title,
+  #cc-main .cm.cm--box .cm__desc { padding-left: 0 !important; padding-right: 0 !important; }
+  #cc-main .cm.cm--box .cm__title { padding-right: 2.5rem !important; }
+  #cc-main .cm.cm--box .cm__btns {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    padding: 1.75rem var(--cc-pad) var(--cc-pad) !important;
+    border-top: 0 !important;
+  }
+  #cc-main .cm.cm--box .cm__btn-group { flex-direction: row !important; flex-wrap: wrap; }
+  #cc-main .cm.cm--box .cm__btn-group + .cm__btn-group,
+  #cc-main .cm.cm--box .cm__btn + .cm__btn { margin: 0 !important; }
+  #cc-main .cm.cm--box .cm__btn { flex: none !important; }
 }

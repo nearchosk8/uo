@@ -18,3 +18,10 @@ export function readStoredConsent(): { analytics: boolean } | null {
     return null;
   }
 }
+
+/** sessionStorage flag: the banner was closed with the X (no consent given).
+ *  It stays hidden for this browser session, then shows again next visit. */
+export const DISMISS_KEY = "uo-cc-dismissed";
+export function bannerDismissed(): boolean {
+  try { return sessionStorage.getItem(DISMISS_KEY) === "1"; } catch { return false; }
+}
