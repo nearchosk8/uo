@@ -28,9 +28,14 @@ function clearGaCookies() {
   });
 }
 
-/** Push the choice to Consent Mode (and GTM). The site has no ads: ad_* stay denied. */
+/** sessionStorage keys written by the GTM session-recording tag. */
+const REC_KEYS = ["uo_rec_sid", "uo_rec_src"];
+
+/** Push the choice to Consent Mode (and GTM). The site has no ads: ad_* stay denied.
+ *  "recording" has no Consent Mode signal: GTM reads consent_recording from the event. */
 function applyConsent() {
   const analytics = CookieConsent.acceptedCategory("analytics");
+  const recording = CookieConsent.acceptedCategory("recording");
   window.dataLayer = window.dataLayer || [];
   const gtag: Gtag = window.gtag ?? function () { window.dataLayer.push(arguments); };
   gtag("consent", "update", {
@@ -39,8 +44,15 @@ function applyConsent() {
     ad_user_data: "denied",
     ad_personalization: "denied",
   });
-  window.dataLayer.push({ event: "consent_update", consent_analytics: analytics ? "granted" : "denied" });
+  window.dataLayer.push({
+    event: "consent_update",
+    consent_analytics: analytics ? "granted" : "denied",
+    consent_recording: recording ? "granted" : "denied",
+  });
   if (!analytics) clearGaCookies();
+  if (!recording) {
+    try { REC_KEYS.forEach((k) => sessionStorage.removeItem(k)); } catch { /* storage off: nothing stored */ }
+  }
 }
 
 // the attached X icon (viewBox + path copied exactly), recoloured via currentColor
@@ -90,6 +102,9 @@ export function startConsent(): Promise<void> {
         enabled: false,
         autoClear: { cookies: [{ name: /^_ga/ }] },
       },
+      // separate from analytics, off by default (its sessionStorage keys are
+      // cleared in applyConsent: autoClear only handles cookies)
+      recording: { enabled: false },
     },
     // first choice + later changes (not on every page load: the <head> script
     // already restores a stored choice before GTM loads)
@@ -102,7 +117,7 @@ export function startConsent(): Promise<void> {
           consentModal: {
             title: "Cookies",
             description:
-              'We’d like to use analytics cookies to understand how the site is used. They stay off unless you allow them. <a href="/privacy">Privacy &amp; cookie policy</a>',
+              'We’d like to use analytics cookies and, as a separate choice, record your visit (never what you type) to understand how the site is used. Both stay off unless you allow them; choose each one under Preferences. <a href="/privacy">Privacy &amp; cookie policy</a>',
             acceptAllBtn: "Accept all",
             acceptNecessaryBtn: "Reject all",
             showPreferencesBtn: "Preferences",
@@ -129,6 +144,19 @@ export function startConsent(): Promise<void> {
                   body: [
                     { name: "_ga", purpose: "Tells visits apart (Google Analytics)", duration: "2 years" },
                     { name: "_ga_<ID>", purpose: "Keeps session state (Google Analytics)", duration: "2 years" },
+                  ],
+                },
+              },
+              {
+                title: "Session recording",
+                description:
+                  "A separate choice, off unless you allow it. We record your visit (clicks, scrolling, pages and what’s on screen, never what you type) and analyse it with Google’s Gemini AI. Recordings are deleted after 90 days and never used for ads.",
+                linkedCategory: "recording",
+                cookieTable: {
+                  headers: { name: "Storage key", purpose: "Purpose", duration: "Duration" },
+                  body: [
+                    { name: "uo_rec_sid", purpose: "Recording session ID (session storage)", duration: "Until you close the tab" },
+                    { name: "uo_rec_src", purpose: "Traffic source of the visit: referrer and UTM tags (session storage)", duration: "Until you close the tab" },
                   ],
                 },
               },

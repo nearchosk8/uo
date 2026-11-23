@@ -7,13 +7,13 @@ import Header from "../components/Header.astro";
 import MenuOverlay from "../components/MenuOverlay.astro";
 import Footer from "../components/Footer.astro";
 ---
-<Base title="Privacy & cookie policy — Untitled Office" description="How Untitled Office uses cookies, Google Analytics and contact-form data.">
+<Base title="Privacy & cookie policy — Untitled Office" description="How Untitled Office uses cookies, Google Analytics, session recording and contact-form data.">
   <MenuOverlay />
   <Header />
   <main>
     <article class="pv edge">
       <h1 class="pv-title">Privacy &amp; cookie policy</h1>
-      <p class="pv-meta mono">Last updated: 05-10-2026</p>
+      <p class="pv-meta mono">Last updated: 23-11-2026</p>
 
       <h2>Who we are</h2>
       <p>
@@ -27,8 +27,9 @@ import Footer from "../components/Footer.astro";
         Google Analytics 4, loaded through Google Tag Manager, to understand how the site is used:
         pages visited, time on page, how you arrived (for example a search or a link), device and
         browser type, and approximate location (country and city). Google Analytics 4 does not store
-        IP addresses. We don’t use this data for advertising and don’t combine it with other data.
-        It is kept for [14 months — set in our GA4 account].
+        IP addresses. We don’t use this data for advertising. If you also allow session recording, we
+        link it to your recordings (see below); we don’t combine it with any other data. It is kept for
+        [14 months — set in our GA4 account].
       </p>
       <p>
         Without your consent, Google Tag Manager still loads, but analytics cookies are not set.
@@ -51,16 +52,55 @@ import Footer from "../components/Footer.astro";
         [and any follow-up work].
       </p>
 
-      <h2>Cookies</h2>
+      <h2>Session recording and AI analysis</h2>
+      <p>
+        <strong>Only with your separate consent.</strong> Session recording is its own choice in the
+        cookie settings (“Session recording”), separate from analytics and off unless you turn it on.
+        If you do, we record your visit to see how the site is used. A recording captures your clicks, scrolling, the pages you
+        view and what appears on your screen while you’re here. It also notes the page that sent you
+        here (the referrer) and any campaign tags in the link you followed (UTM tags, such as source,
+        medium and campaign).
+      </p>
+      <p>
+        <strong>What we don’t record.</strong> Anything you type into a field, such as the contact
+        form, is masked and never recorded.
+      </p>
+      <p>
+        <strong>Why.</strong> To understand how visitors move through the site, for example whether
+        someone who looks at a project then visits the Contact page, so we can improve it. We don’t
+        use recordings for advertising.
+      </p>
+      <p>
+        <strong>Who processes it.</strong> Recordings are stored with Netlify (Netlify Blobs), our
+        hosting provider. We analyse them with Google’s Gemini AI to find patterns such as “viewed a
+        project, then visited Contact”, and send those results to our Google Analytics 4 property.
+        If you have also allowed analytics, each recording is linked to your Google Analytics client
+        ID and session ID, so the results can be matched to your visit there.
+      </p>
+      <p>
+        <strong>How long we keep it.</strong> Recordings are kept for 90 days, then deleted. The
+        results sent to Google Analytics are kept as described above.
+      </p>
+      <p>
+        <strong>Legal basis and withdrawing consent.</strong> Session recording is based on your
+        consent to the “Session recording” category specifically (GDPR Art. 6(1)(a)); allowing
+        analytics alone does not turn it on, and without it nothing is recorded. You can withdraw
+        consent at any time through “Cookie settings” in the footer: recording stops from then on and
+        its session-storage keys are removed. To have a recording deleted sooner, email us.
+      </p>
+
+      <h2>Cookies and browser storage</h2>
       <div class="pv-table-wrap">
         <table class="pv-table">
           <thead>
-            <tr><th>Cookie</th><th>Purpose</th><th>Duration</th><th>Type</th></tr>
+            <tr><th>Name</th><th>Purpose</th><th>Duration</th><th>Type</th></tr>
           </thead>
           <tbody>
             <tr><td><code>cc_cookie</code></td><td>Remembers your cookie choice</td><td>6 months</td><td>Necessary</td></tr>
             <tr><td><code>_ga</code></td><td>Tells visits apart (Google Analytics)</td><td>2 years</td><td>Analytics, with consent</td></tr>
             <tr><td><code>_ga_&lt;ID&gt;</code></td><td>Keeps session state (Google Analytics)</td><td>2 years</td><td>Analytics, with consent</td></tr>
+            <tr><td><code>uo_rec_sid</code></td><td>Recording session ID (session storage, not a cookie)</td><td>Until you close the tab</td><td>Session recording, with consent</td></tr>
+            <tr><td><code>uo_rec_src</code></td><td>Traffic source of the visit: referrer and UTM tags (session storage, not a cookie)</td><td>Until you close the tab</td><td>Session recording, with consent</td></tr>
           </tbody>
         </table>
       </div>
@@ -69,6 +109,8 @@ import Footer from "../components/Footer.astro";
       <h2>Legal basis</h2>
       <p>
         Analytics cookies are used only with your consent (GDPR Art. 6(1)(a) and the ePrivacy rules).
+        Session recording and its AI analysis are used only with your separate consent to the
+        “Session recording” category (GDPR Art. 6(1)(a) and the ePrivacy rules).
         The consent cookie is strictly necessary to remember your choice. Umami’s cookieless,
         anonymous statistics are based on our legitimate interest (GDPR Art. 6(1)(f)). Contact-form data is used
         to answer your request (GDPR Art. 6(1)(b)).
@@ -79,12 +121,13 @@ import Footer from "../components/Footer.astro";
         You can change or withdraw consent at any time:
         <button type="button" class="pv-btn u-link" data-cc-settings>open cookie settings</button>
         (also linked in the footer). If you switch analytics off, we remove the Google Analytics cookies.
+        If you switch session recording off, we stop recording your visits and remove its session-storage keys.
       </p>
 
       <h2>Who else processes data</h2>
       <p>
-        Google (Google Analytics, Google Tag Manager), Umami Software (Umami Cloud statistics) and
-        Netlify (hosting and forms) process data on our behalf. Some of this may happen outside the EU, under the safeguards these providers
+        Google (Google Analytics, Google Tag Manager, Gemini AI), Umami Software (Umami Cloud statistics) and
+        Netlify (hosting, forms and session-recording storage) process data on our behalf. Some of this may happen outside the EU, under the safeguards these providers
         offer (such as the EU–US Data Privacy Framework and standard contractual clauses).
       </p>
 
