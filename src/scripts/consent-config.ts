@@ -3,7 +3,7 @@
 // Bump CONSENT_REVISION whenever the categories or wording change in a way
 // that needs fresh consent: everyone is asked again.
 export const CONSENT_COOKIE = "cc_cookie"; // vanilla-cookieconsent's default name
-export const CONSENT_REVISION = 1;
+export const CONSENT_REVISION = 2;
 export const CONSENT_DAYS = 182; // ~6 months (library default)
 
 /** The stored choice, if it's for the current revision; otherwise null. */
