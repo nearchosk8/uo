@@ -26,7 +26,10 @@ import Footer from "../components/Footer.astro";
         <strong>Analytics (only with your consent).</strong> If you allow analytics cookies, we use
         Google Analytics 4, loaded through Google Tag Manager, to understand how the site is used:
         pages visited, time on page, how you arrived (for example a search or a link), device and
-        browser type, and approximate location (country and city). Google Analytics 4 does not store
+        browser type, and approximate location (country and city). With analytics consent, we also
+        count interactions on each page (mouse movements, scrolls, clicks, touches and key presses,
+        as counts only, never which keys) to tell human visitors from automated or bot traffic, and
+        send these counts to Google Analytics as a “behaviour summary”. Google Analytics 4 does not store
         IP addresses. We don’t use this data for advertising. If you also allow session recording, we
         link it to your recordings (see below); we don’t combine it with any other data. It is kept for
         [14 months — set in our GA4 account].
@@ -71,10 +74,12 @@ import Footer from "../components/Footer.astro";
         use recordings for advertising.
       </p>
       <p>
-        <strong>Who processes it.</strong> Recordings are stored with Netlify (Netlify Blobs), our
+        <strong>Who processes it.</strong> The recording library is served from our own website, not
+        from a third-party CDN. Recordings are stored with Netlify (Netlify Blobs), our
         hosting provider. We analyse them with Google’s Gemini AI to find patterns such as “viewed a
         project, then visited Contact”, and send those results to our Google Analytics 4 property.
-        If you have also allowed analytics, each recording is linked to your Google Analytics client
+        We may also use Anthropic’s Claude AI to analyse the recorded timeline of a visit; typed text
+        is never recorded, so it is never part of that analysis. If you have also allowed analytics, each recording is linked to your Google Analytics client
         ID and session ID, so the results can be matched to your visit there.
       </p>
       <p>
@@ -127,8 +132,9 @@ import Footer from "../components/Footer.astro";
 
       <h2>Who else processes data</h2>
       <p>
-        Google (Google Analytics, Google Tag Manager, Gemini AI), Umami Software (Umami Cloud statistics) and
-        Netlify (hosting, forms and session-recording storage) process data on our behalf. Some of this may happen outside the EU, under the safeguards these providers
+        Google (Google Analytics, Google Tag Manager, Gemini AI), Anthropic (Claude AI, analysis of
+        session recordings), Umami Software (Umami Cloud statistics) and Netlify (hosting, forms and
+        session-recording storage) process data on our behalf. Some of this may happen outside the EU, under the safeguards these providers
         offer (such as the EU–US Data Privacy Framework and standard contractual clauses).
       </p>
 

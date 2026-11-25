@@ -137,7 +137,7 @@ export function startConsent(): Promise<void> {
               {
                 title: "Analytics",
                 description:
-                  "Google Analytics 4 tells us which pages are visited and how, on what kind of device, and from roughly where. We don’t use it for ads.",
+                  "Google Analytics 4 tells us which pages are visited and how, on what kind of device, and from roughly where. We also count interactions per page (counts only, never which keys) to tell people from bots. We don’t use it for ads.",
                 linkedCategory: "analytics",
                 cookieTable: {
                   headers: { name: "Cookie", purpose: "Purpose", duration: "Duration" },
@@ -150,7 +150,7 @@ export function startConsent(): Promise<void> {
               {
                 title: "Session recording",
                 description:
-                  "A separate choice, off unless you allow it. We record your visit (clicks, scrolling, pages and what’s on screen, never what you type) and analyse it with Google’s Gemini AI. Recordings are deleted after 12 months and never used for ads.",
+                  "A separate choice, off unless you allow it. We record your visit (clicks, scrolling, pages and what’s on screen, never what you type) and analyse it with Google’s Gemini AI and Anthropic’s Claude AI. Recordings are deleted after 12 months and never used for ads.",
                 linkedCategory: "recording",
                 cookieTable: {
                   headers: { name: "Storage key", purpose: "Purpose", duration: "Duration" },
