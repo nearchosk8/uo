@@ -150,7 +150,7 @@ export function startConsent(): Promise<void> {
               {
                 title: "Session recording",
                 description:
-                  "A separate choice, off unless you allow it. We record your visit (clicks, scrolling, pages and what’s on screen, never what you type) and analyse it with Google’s Gemini AI. Recordings are deleted after 90 days and never used for ads.",
+                  "A separate choice, off unless you allow it. We record your visit (clicks, scrolling, pages and what’s on screen, never what you type) and analyse it with Google’s Gemini AI. Recordings are deleted after 12 months and never used for ads.",
                 linkedCategory: "recording",
                 cookieTable: {
                   headers: { name: "Storage key", purpose: "Purpose", duration: "Duration" },
